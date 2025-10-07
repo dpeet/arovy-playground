@@ -1,10 +1,33 @@
-import AIButton from '@/components/AIButton';
-import { toast } from 'sonner';
+import AIButton from "@/components/AIButton";
+import { toast } from "sonner";
+
+const BUTTONS = [
+  {
+    variant: "rotate",
+    title: "Rotating Gradient",
+    description: "Smooth gradient rotation on hover with enhanced saturation",
+  },
+  {
+    variant: "shimmer",
+    title: "Shimmer Effect",
+    description: "Elegant shimmer sweep animation on hover",
+  },
+  {
+    variant: "outline",
+    title: "Gradient Outline",
+    description: "Gradient border with color transition on hover",
+  },
+  {
+    variant: "combined",
+    title: "Combined Effect",
+    description: "Rotating gradient background and border with glow",
+  },
+] as const;
 
 const Index = () => {
-  const handleClick = (variant: string) => {
-    toast.success(`${variant} button clicked!`, {
-      description: 'This showcases beautiful AI-powered button designs',
+  const handleClick = (title: (typeof BUTTONS)[number]["title"]) => {
+    toast.success(`${title} button clicked!`, {
+      description: "This showcases beautiful AI-powered button designs",
     });
   };
 
@@ -15,7 +38,7 @@ const Index = () => {
           <div className="flex justify-center">
             <h1
               className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-[image:var(--gradient-ai-hover)] inline-block"
-              style={{ filter: 'saturate(1.4) brightness(1.08)' }}
+              style={{ filter: "saturate(1.4) brightness(1.08)" }}
             >
               AI Button Showcase
             </h1>
@@ -26,69 +49,17 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Button 1: Rotating Gradient */}
-          <div className="flex flex-col items-center gap-4">
-            <AIButton 
-              variant="rotate" 
-              onClick={() => handleClick('Rotating Gradient')}
-            >
-              Summarize
-            </AIButton>
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2">Rotating Gradient</h3>
-              <p className="text-sm text-muted-foreground">
-                Smooth gradient rotation on hover with enhanced saturation
-              </p>
+          {BUTTONS.map(({ variant, title, description }) => (
+            <div key={variant} className="flex flex-col items-center gap-4">
+              <AIButton variant={variant} onClick={() => handleClick(title)}>
+                Summarize
+              </AIButton>
+              <div className="text-center">
+                <h3 className="font-semibold text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground">{description}</p>
+              </div>
             </div>
-          </div>
-
-          {/* Button 2: Shimmer Effect */}
-          <div className="flex flex-col items-center gap-4">
-            <AIButton 
-              variant="shimmer" 
-              onClick={() => handleClick('Shimmer Effect')}
-            >
-              Summarize
-            </AIButton>
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2">Shimmer Effect</h3>
-              <p className="text-sm text-muted-foreground">
-                Elegant shimmer sweep animation on hover
-              </p>
-            </div>
-          </div>
-
-          {/* Button 3: Gradient Outline */}
-          <div className="flex flex-col items-center gap-4">
-            <AIButton 
-              variant="outline" 
-              onClick={() => handleClick('Gradient Outline')}
-            >
-              Summarize
-            </AIButton>
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2">Gradient Outline</h3>
-              <p className="text-sm text-muted-foreground">
-                Gradient border with color transition on hover
-              </p>
-            </div>
-          </div>
-
-          {/* Button 4: Combined Effect */}
-          <div className="flex flex-col items-center gap-4">
-            <AIButton 
-              variant="combined" 
-              onClick={() => handleClick('Combined Effect')}
-            >
-              Summarize
-            </AIButton>
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2">Combined Effect</h3>
-              <p className="text-sm text-muted-foreground">
-                Rotating gradient background and border with glow
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
         <div className="mt-16 text-center">
