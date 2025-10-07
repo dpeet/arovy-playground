@@ -12,9 +12,14 @@ const Index = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[hsl(207,70%,63%)] to-[hsl(18,72%,61%)]">
-            AI Button Showcase
-          </h1>
+          <div className="flex justify-center">
+            <h1
+              className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-[image:var(--gradient-ai-hover)] inline-block"
+              style={{ filter: 'saturate(1.4) brightness(1.08)' }}
+            >
+              AI Button Showcase
+            </h1>
+          </div>
           <p className="text-muted-foreground text-lg">
             Explore four stunning button designs with gradient animations
           </p>
