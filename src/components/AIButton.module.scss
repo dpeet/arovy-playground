@@ -2,49 +2,12 @@
 // AIButton SCSS Module - Complete Style Migration
 // ============================================
 
-// Color Palette
-$primary-blue: hsl(207, 70%, 63%);
-$primary-orange: hsl(18, 72%, 61%);
-$text-dark: hsl(0, 0%, 16%);
-$white: white;
+// Import shared AI component variables
+@import '@/styles/_ai-variables.scss';
 
-// Additional colors for combined variant
-$combined-blue-idle: hsl(207, 60%, 54%);
-$combined-orange-idle: hsl(18, 62%, 52%);
-$combined-blue-hover: hsl(207, 65%, 58%);
-$combined-orange-hover: hsl(18, 67%, 56%);
-$combined-blue-inner-idle: hsl(207, 75%, 64%);
-$combined-orange-inner-idle: hsl(18, 72%, 61%);
-$combined-blue-inner-hover: hsl(207, 85%, 68%);
-$combined-orange-inner-hover: hsl(18, 77%, 66%);
-
-// Drop shadow colors
-$shadow-blue-idle: rgba(68, 163, 255, 0.25);
-$shadow-orange-idle: rgba(255, 134, 87, 0.25);
-$shadow-blue-hover: rgba(90, 184, 255, 0.35);
-$shadow-orange-hover: rgba(255, 158, 120, 0.35);
-
-// Default gradient angle
-$default-angle: 135deg;
-$hover-angle: 315deg;
-
-// ============================================
-// Mixins
-// ============================================
-
-@mixin buttonReset {
-  border: none !important;
-  outline: none;
-  cursor: pointer;
-}
-
-@mixin transitionAll($duration: 0.3s) {
-  transition: all $duration ease;
-}
-
-@mixin boxShadowLg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
+// Button-specific angle aliases for readability
+$default-angle: $gradient-primary-angle;
+$hover-angle: $gradient-hover-angle;
 
 // ============================================
 // Base AIButton Styles
@@ -54,13 +17,19 @@ $hover-angle: 315deg;
   @include buttonReset;
   @include transitionAll;
 
-  // CSS custom property for animated gradient angle
-  --ai-button-angle: #{$default-angle};
+  color: $text-dark;
 
-  // Base text styles (matching original font-medium text-sm)
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
+  // CSS custom properties for dynamic styling
+  --ai-button-angle: #{$default-angle};
+  --ai-gradient-intensity: 1; // 0-1 scale (0 = gray, 1 = full color)
+  --ai-border-width: 1px;     // Adjustable border thickness
+
+  // Calculate colors based on intensity (mix between gray and vibrant)
+  --ai-blue: #{$primary-blue};
+  --ai-orange: #{$primary-orange};
+
+  // Remove font-weight override to match Ant Design default (400)
+  // Ant Design handles all typography settings
 
   // State modifiers
   &--idle {
@@ -85,9 +54,6 @@ $hover-angle: 315deg;
     $primary-blue 0%,
     $primary-orange 100%
   ) !important;
-
-  // Text color for primary buttons
-  color: $white !important;
 }
 
 // ============================================
@@ -106,7 +72,6 @@ $hover-angle: 315deg;
     $primary-orange 100%
   ) !important;
 
-  color: $white !important;
 }
 
 // Shimmer overlay element
@@ -132,12 +97,8 @@ $hover-angle: 315deg;
   }
 }
 
-// Shimmer icon and label positioning
-.aiButton__icon--shimmer,
-.aiButton__label--shimmer {
-  position: relative;
-  z-index: 10;
-}
+// Shimmer overlay is behind button content
+// No need for special icon/label positioning since we removed the span wrapper
 
 // ============================================
 // OUTLINE Variant
@@ -146,15 +107,18 @@ $hover-angle: 315deg;
 // Wrapper for gradient border
 .aiButtonWrapper--outline {
   display: inline-block;
-  padding: 2px;
-  border-radius: 0.25rem;
+  padding: var(--ai-border-width);
+  border-radius: 0.375rem; // Slightly larger to accommodate border
   @include transitionAll;
 
-  // Gradient background serves as border
+  // Negative margin to compensate for padding (auto-calculates)
+  margin: calc(var(--ai-border-width) * -1);
+
+  // Gradient that adjusts from gray to vibrant based on intensity
   background: linear-gradient(
     135deg,
-    $primary-blue 0%,
-    $primary-orange 100%
+    var(--ai-blue) 0%,
+    var(--ai-orange) 100%
   );
 
   &.aiButtonWrapper--idle {
@@ -168,9 +132,12 @@ $hover-angle: 315deg;
 
 // Inner button for outline variant
 .aiButton--outline {
+  // Default to subtle gradient (30% intensity for Ant-like appearance)
+  --ai-gradient-intensity: 0.3;
+  --ai-border-width: 1px;
+
   background: $white !important;
   box-shadow: none !important;
-  font-weight: 600;
   @include transitionAll;
 
   &.aiButton--idle {
@@ -202,9 +169,12 @@ $hover-angle: 315deg;
 // Wrapper with animated gradient and drop shadows
 .aiButtonWrapper--combined {
   display: inline-block;
-  padding: 2px;
-  border-radius: 0.25rem;
+  padding: var(--ai-border-width, 2px);
+  border-radius: 0.375rem;
   @include transitionAll;
+
+  // Negative margin to compensate for padding (auto-calculates)
+  margin: calc(var(--ai-border-width, 2px) * -1);
 
   &.aiButtonWrapper--idle {
     background: linear-gradient(
@@ -229,6 +199,10 @@ $hover-angle: 315deg;
 
 // Inner button for combined variant
 .aiButton--combined {
+  // Default to full intensity for vibrant effect
+  --ai-gradient-intensity: 1;
+  --ai-border-width: 2px;
+
   box-shadow: none !important;
   color: $white !important;
 

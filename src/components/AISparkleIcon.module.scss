@@ -1,0 +1,72 @@
+// ============================================
+// AI Sparkle Icon Styles
+// Circle and badge variants with gradient backgrounds
+// ============================================
+//
+// Architecture Note:
+// These styles control SVG sizing for fixed-size variants (circle, badge).
+// The SparkleIconSVG component uses `disableInlineSize` prop to skip
+// inline styles and let these CSS rules control dimensions.
+// This provides a single source of truth for sizing.
+//
+// ============================================
+
+// Import shared AI component variables
+@import '@/styles/_ai-variables.scss';
+
+.circle {
+  // Container dimensions
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  @include gradient-soft;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  // SVG sparkle icon dimensions (controlled by CSS, not props)
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  padding: 2px 4px;
+  align-items: center;
+  gap: 4px;
+  border-radius: 4px;
+  @include gradient-soft;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.88);
+  white-space: nowrap;
+  min-height: 20px; // Ensures consistent height: 16px SVG + 2px top + 2px bottom
+
+  // SVG sparkle icon dimensions (controlled by CSS, not props)
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  span {
+    margin-right: 2px;
+    line-height: 1; // Prevent extra vertical space from line-height
+  }
+}
+
+.inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}

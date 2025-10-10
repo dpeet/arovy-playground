@@ -2,13 +2,15 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
-import SparkleIcon from "./SparkleIcon";
+import AISparkleIcon from "./AISparkleIcon";
 import styles from "./AIButton.module.scss";
 
 interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
   variant: "rotate" | "shimmer" | "outline" | "combined";
   children?: ReactNode;
   type?: ButtonProps["type"]; // Re-add type as optional to avoid TS errors
+  gradientIntensity?: number; // 0-1, controls gradient vibrancy
+  borderWidth?: string; // CSS value like "1px", "2px", etc.
 }
 
 const AIButton = (props: AIButtonProps) => {
@@ -19,6 +21,8 @@ const AIButton = (props: AIButtonProps) => {
     onClick,
     onMouseEnter: userMouseEnter,
     onMouseLeave: userMouseLeave,
+    gradientIntensity,
+    borderWidth,
     ...restProps
   } = props;
 
@@ -86,20 +90,27 @@ const AIButton = (props: AIButtonProps) => {
   // Style object for gradient angle (only used by rotate and combined variants)
   const angleStyle = animateGradient ? { '--ai-button-angle': `${gradientAngle}deg` } as React.CSSProperties : undefined;
 
+  // Create style object with CSS variables for intensity and border width
+  const customStyle: React.CSSProperties = {
+    ...angleStyle,
+    ...(gradientIntensity !== undefined && { '--ai-gradient-intensity': gradientIntensity }),
+    ...(borderWidth !== undefined && { '--ai-border-width': borderWidth }),
+  } as React.CSSProperties;
+
   // Render different variants
   switch (variant) {
     case "rotate":
       return (
         <Button
           type="primary"
-          icon={<SparkleIcon fill="white" />}
+          icon={<AISparkleIcon variant="black" size={20} />}
           className={cn(
             styles.aiButton,
             styles["aiButton--rotate"],
             getStateClass(),
             className
           )}
-          style={angleStyle}
+          style={customStyle}
           onClick={onClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -113,20 +124,21 @@ const AIButton = (props: AIButtonProps) => {
       return (
         <Button
           type="primary"
-          icon={<SparkleIcon fill="white" className={styles["aiButton__icon--shimmer"]} />}
+          icon={<AISparkleIcon variant="black" size={20} />}
           className={cn(
             styles.aiButton,
             styles["aiButton--shimmer"],
             getStateClass(),
             className
           )}
+          style={customStyle}
           onClick={onClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           {...restProps}
         >
           <div className={styles.aiButton__overlay} />
-          <span className={styles["aiButton__label--shimmer"]}>{children}</span>
+          {children}
         </Button>
       );
 
@@ -138,13 +150,16 @@ const AIButton = (props: AIButtonProps) => {
             getWrapperStateClass(),
             className
           )}
+          style={customStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <Button
             type="default"
             icon={
-              <SparkleIcon
+              <AISparkleIcon
+                variant="color"
+                size={20}
                 className={styles["aiButton__icon--outline"]}
               />
             }
@@ -153,6 +168,7 @@ const AIButton = (props: AIButtonProps) => {
               styles["aiButton--outline"],
               getStateClass()
             )}
+            style={customStyle}
             onClick={onClick}
             {...restProps}
           >
@@ -169,19 +185,19 @@ const AIButton = (props: AIButtonProps) => {
             getWrapperStateClass(),
             className
           )}
-          style={angleStyle}
+          style={customStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <Button
             type="primary"
-            icon={<SparkleIcon fill="white" />}
+            icon={<AISparkleIcon variant="black" size={20} />}
             className={cn(
               styles.aiButton,
               styles["aiButton--combined"],
               getStateClass()
             )}
-            style={angleStyle}
+            style={customStyle}
             onClick={onClick}
             {...restProps}
           >

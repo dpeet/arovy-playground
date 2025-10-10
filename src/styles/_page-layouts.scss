@@ -1,0 +1,94 @@
+// ============================================
+// Page Layout Utilities
+// Shared page layout styles for showcases
+// ============================================
+
+@import './_ai-variables.scss';
+
+// Full-height centered page container
+.showcasePage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: hsl(0 0% 100%); // Tailwind bg-background default
+
+  &__content {
+    width: 100%;
+    max-width: 64rem; // Tailwind max-w-4xl
+  }
+}
+
+// Gradient text effect for titles
+.gradientTitle {
+  font-size: 3rem; // Tailwind text-5xl
+  font-weight: 700; // Tailwind font-bold
+  margin-bottom: 1rem; // Tailwind mb-4
+  background: linear-gradient(
+    $gradient-primary-angle,
+    $primary-blue 0%,
+    $primary-orange 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: saturate(1.4) brightness(1.08);
+  display: inline-block;
+}
+
+// Button showcase grid
+.buttonGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem; // Tailwind gap-12
+
+  @media (min-width: 768px) { // Tailwind md: breakpoint
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; // Tailwind gap-4
+  }
+
+  &__title {
+    font-weight: 600; // Tailwind font-semibold
+    color: hsl(0 0% 16%); // Tailwind text-foreground
+    margin-bottom: 0.5rem; // Tailwind mb-2
+  }
+
+  &__description {
+    font-size: 0.875rem; // Tailwind text-sm
+    color: hsl(0 0% 45%); // Tailwind text-muted-foreground
+  }
+}
+
+// Page header section
+.showcaseHeader {
+  text-align: center;
+  margin-bottom: 4rem; // Tailwind mb-16
+
+  &__titleWrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__subtitle {
+    color: hsl(0 0% 45%); // Tailwind text-muted-foreground
+    font-size: 1.125rem; // Tailwind text-lg
+  }
+}
+
+// Page footer section
+.showcaseFooter {
+  margin-top: 4rem; // Tailwind mt-16
+  text-align: center;
+
+  &__hint {
+    font-size: 0.875rem; // Tailwind text-sm
+    color: hsl(0 0% 45%); // Tailwind text-muted-foreground
+  }
+}
