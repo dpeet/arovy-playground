@@ -8,7 +8,6 @@ interface AISparkleIconProps {
   className?: string;
   variant?: "color" | "black" | "disabled" | "circle" | "badge" | "inline";
   size?: number; // default 24px; only used for color/black/disabled/inline variants (circle/badge use fixed SCSS sizes)
-  animate?: boolean;
   showLabel?: boolean; // for badge variant
 }
 
@@ -47,22 +46,21 @@ const AISparkleIcon = ({
   className,
   variant = "color",
   size = 24,
-  animate = false,
   showLabel = true
 }: AISparkleIconProps) => {
   // Special variants with their own components
   if (variant === "circle") {
-    return <AISparkleCircle className={className} animate={animate} />;
+    return <AISparkleCircle className={className} />;
   }
 
   if (variant === "badge") {
-    return <AISparkleBadge className={className} showLabel={showLabel} animate={animate} />;
+    return <AISparkleBadge className={className} showLabel={showLabel} />;
   }
 
   if (variant === "inline") {
     return (
       <span className={cn(styles.inline, className)}>
-        <SparkleIconSVG variant="color" size={size} animate={animate} />
+        <SparkleIconSVG variant="color" size={size} />
       </span>
     );
   }
@@ -73,7 +71,6 @@ const AISparkleIcon = ({
       <SparkleIconSVG
         variant={variant as "color" | "black" | "disabled"}
         size={size}
-        animate={animate}
       />
     </div>
   );

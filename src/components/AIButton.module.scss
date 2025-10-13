@@ -1,104 +1,38 @@
 // ============================================
-// AIButton SCSS Module - Complete Style Migration
+// AIButton SCSS Module - Modern Sass with @use
 // ============================================
 
-// Import shared AI component variables
-@import '@/styles/_ai-variables.scss';
+// Import shared AI component variables with namespace
+@use '@/styles/ai-variables' as ai;
 
 // Button-specific angle aliases for readability
-$default-angle: $gradient-primary-angle;
-$hover-angle: $gradient-hover-angle;
+$default-angle: ai.$gradient-primary-angle;
+$hover-angle: ai.$gradient-hover-angle;
 
 // ============================================
 // Base AIButton Styles
 // ============================================
 
 .aiButton {
-  @include buttonReset;
-  @include transitionAll;
+  @include ai.buttonReset;
+  @include ai.transitionAll;
 
-  color: $text-dark;
+  color: ai.$button-text-dark;
 
   // CSS custom properties for dynamic styling
   --ai-button-angle: #{$default-angle};
-  --ai-gradient-intensity: 1; // 0-1 scale (0 = gray, 1 = full color)
   --ai-border-width: 1px;     // Adjustable border thickness
+  --ai-border-radius: var(--ant-border-radius, 6px);
 
-  // Calculate colors based on intensity (mix between gray and vibrant)
-  --ai-blue: #{$primary-blue};
-  --ai-orange: #{$primary-orange};
-
-  // Remove font-weight override to match Ant Design default (400)
-  // Ant Design handles all typography settings
-
-  // State modifiers
+  // State modifiers using consistent filter mixins
   &--idle {
-    filter: saturate(1) brightness(1);
+    @include ai.filter-idle;
   }
 
   &--hovered {
-    filter: saturate(1.5) brightness(1.15);
+    @include ai.filter-hover;
   }
 }
-
-// ============================================
-// ROTATE Variant
-// ============================================
-
-.aiButton--rotate {
-  @include boxShadowLg;
-
-  // Dynamic gradient using CSS variable
-  background: linear-gradient(
-    var(--ai-button-angle, #{$default-angle}),
-    $primary-blue 0%,
-    $primary-orange 100%
-  ) !important;
-}
-
-// ============================================
-// SHIMMER Variant
-// ============================================
-
-.aiButton--shimmer {
-  @include boxShadowLg;
-  overflow: hidden;
-  position: relative;
-
-  // Static gradient background
-  background: linear-gradient(
-    135deg,
-    $primary-blue 0%,
-    $primary-orange 100%
-  ) !important;
-
-}
-
-// Shimmer overlay element
-.aiButton__overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  transition: transform 0.8s ease;
-  transform: translateX(-100%);
-
-  // Parent hover state triggers shimmer animation
-  .aiButton--shimmer.aiButton--hovered & {
-    transform: translateX(100%);
-  }
-}
-
-// Shimmer overlay is behind button content
-// No need for special icon/label positioning since we removed the span wrapper
 
 // ============================================
 // OUTLINE Variant
@@ -106,59 +40,71 @@ $hover-angle: $gradient-hover-angle;
 
 // Wrapper for gradient border
 .aiButtonWrapper--outline {
-  display: inline-block;
-  padding: var(--ai-border-width);
-  border-radius: 0.375rem; // Slightly larger to accommodate border
-  @include transitionAll;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--ai-border-radius, 6px);
+  @include ai.transitionAll;
 
-  // Negative margin to compensate for padding (auto-calculates)
-  margin: calc(var(--ai-border-width) * -1);
-
-  // Gradient that adjusts from gray to vibrant based on intensity
-  background: linear-gradient(
-    135deg,
-    var(--ai-blue) 0%,
-    var(--ai-orange) 100%
-  );
-
-  &.aiButtonWrapper--idle {
-    filter: saturate(1) brightness(1);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--ai-border-width, 1px);
+    box-sizing: border-box;
+    background: ai.ai-gradient();
+    pointer-events: none;
+    z-index: 0;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    transition: filter 300ms ease;
   }
 
-  &.aiButtonWrapper--hovered {
-    filter: saturate(1.5) brightness(1.15);
+  &.aiButtonWrapper--idle::before {
+    @include ai.filter-idle;
+  }
+
+  &.aiButtonWrapper--hovered::before {
+    @include ai.filter-hover;
   }
 }
 
 // Inner button for outline variant
 .aiButton--outline {
-  // Default to subtle gradient (30% intensity for Ant-like appearance)
-  --ai-gradient-intensity: 0.3;
   --ai-border-width: 1px;
 
-  background: $white !important;
+  background: ai.$white !important;
   box-shadow: none !important;
-  @include transitionAll;
+  background-clip: padding-box;
+  border-radius: var(--ai-border-radius, 6px);
+  position: relative;
+  z-index: 1;
+  @include ai.transitionAll;
 
   &.aiButton--idle {
-    color: $text-dark !important;
+    color: ai.$button-text-dark !important;
   }
 
   &.aiButton--hovered {
-    color: $primary-blue !important;
-  }
-
-  &.aiButton--idle .aiButton__icon--outline {
-    fill: $text-dark;
-  }
-
-  &.aiButton--hovered .aiButton__icon--outline {
-    fill: $primary-blue;
+    color: ai.$primary-blue !important;
   }
 }
 
-// Outline icon transitions
-.aiButton__icon--outline {
+// Outline icon transitions - simplified selectors
+.aiButton--idle .aiButton__icon--outline {
+  fill: ai.$button-text-dark;
+  transition: fill 300ms ease;
+}
+
+.aiButton--hovered .aiButton__icon--outline {
+  fill: ai.$primary-blue;
   transition: fill 300ms ease;
 }
 
@@ -168,66 +114,94 @@ $hover-angle: $gradient-hover-angle;
 
 // Wrapper with animated gradient and drop shadows
 .aiButtonWrapper--combined {
-  display: inline-block;
-  padding: var(--ai-border-width, 2px);
-  border-radius: 0.375rem;
-  @include transitionAll;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--ai-border-radius, 6px);
+  @include ai.transitionAll;
 
-  // Negative margin to compensate for padding (auto-calculates)
-  margin: calc(var(--ai-border-width, 2px) * -1);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--ai-border-width, 2px);
+    box-sizing: border-box;
+    background: ai.ai-gradient-stops(
+      var(--ai-button-angle, #{$default-angle}),
+      ai.$combined-blue-idle,
+      ai.$combined-orange-idle
+    );
+    pointer-events: none;
+    z-index: 0;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    transition: background 300ms ease, filter 300ms ease;
+  }
 
   &.aiButtonWrapper--idle {
-    background: linear-gradient(
-      var(--ai-button-angle, #{$default-angle}),
-      $combined-blue-idle 24.61%,
-      $combined-orange-idle 75.39%
-    );
-    filter: drop-shadow(3px 3px 6px $shadow-blue-idle)
-            drop-shadow(3px 3px 6px $shadow-orange-idle);
+    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-idle)
+            drop-shadow(3px 3px 6px ai.$shadow-orange-idle);
   }
 
   &.aiButtonWrapper--hovered {
-    background: linear-gradient(
+    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-hover)
+            drop-shadow(3px 3px 6px ai.$shadow-orange-hover);
+  }
+
+  &.aiButtonWrapper--hovered::before {
+    background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
-      $combined-blue-hover 24.61%,
-      $combined-orange-hover 75.39%
+      ai.$combined-blue-hover,
+      ai.$combined-orange-hover
     );
-    filter: drop-shadow(3px 3px 6px $shadow-blue-hover)
-            drop-shadow(3px 3px 6px $shadow-orange-hover);
+    @include ai.filter-hover;
+  }
+
+  &.aiButtonWrapper--idle::before {
+    @include ai.filter-idle;
   }
 }
 
 // Inner button for combined variant
 .aiButton--combined {
-  // Default to full intensity for vibrant effect
-  --ai-gradient-intensity: 1;
   --ai-border-width: 2px;
 
   box-shadow: none !important;
-  color: $white !important;
+  color: ai.$button-text-light !important;
+  position: relative;
+  z-index: 1;
+  border-radius: var(--ai-border-radius, 6px);
 
   &.aiButton--idle {
-    background: linear-gradient(
+    background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$default-angle}),
-      $combined-blue-inner-idle 24.61%,
-      $combined-orange-inner-idle 75.39%
+      ai.$combined-blue-inner-idle,
+      ai.$combined-orange-inner-idle
     ) !important;
   }
 
   &.aiButton--hovered {
-    background: linear-gradient(
+    background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
-      $combined-blue-inner-hover 24.61%,
-      $combined-orange-inner-hover 75.39%
+      ai.$combined-blue-inner-hover,
+      ai.$combined-orange-inner-hover
     ) !important;
   }
 }
 
 // ============================================
-// Ant Design Overrides
+// Ant Design Overrides (Grouped Together)
 // ============================================
 
-// Ensure our styles take precedence over Ant Design defaults
+// Use :where() to reduce specificity where possible,
+// only use !important when absolutely necessary
 .aiButton {
   &.ant-btn {
     // Remove Ant Design's default transitions that conflict
@@ -235,37 +209,33 @@ $hover-angle: $gradient-hover-angle;
       display: none;
     }
 
+    border-radius: var(--ai-border-radius, 6px);
+
     // Ensure hover states don't add unwanted styles
-    &:hover,
-    &:focus {
-      border-color: transparent;
-    }
+    border-color: transparent;
   }
 }
 
-// Fix for Ant Design primary button text color
-.aiButton--rotate,
-.aiButton--shimmer,
-.aiButton--combined {
-  &.ant-btn-primary {
-    color: $white !important;
+// Combined variant specific overrides
+.aiButton--combined.ant-btn-primary {
+  color: ai.$button-text-light !important;
+  border-color: transparent !important;
 
-    &:hover,
-    &:focus {
-      color: $white !important;
-    }
+  &:hover,
+  &:focus {
+    color: ai.$button-text-light !important;
+    border-color: transparent !important;
   }
 }
 
-// Fix for Ant Design default button styles in outline variant
-.aiButton--outline {
-  &.ant-btn-default {
-    border: none !important;
+// Outline variant specific overrides
+.aiButton--outline.ant-btn-default {
+  border-color: transparent !important;
+  background-clip: padding-box;
 
-    &:hover,
-    &:focus {
-      border-color: transparent !important;
-      background: $white !important;
-    }
+  &:hover,
+  &:focus {
+    border-color: transparent !important;
+    background: ai.$white !important;
   }
 }

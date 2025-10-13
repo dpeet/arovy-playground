@@ -5,7 +5,7 @@ AI component playground for enterprise security UX. React + TypeScript + Vite + 
 ## Build & Run Commands
 
 ```bash
-npm run dev          # Start dev server on port 8080
+npm run dev          # Start dev server on port 5173
 npm run build        # Production build
 npm run lint         # ESLint check
 npm run preview      # Preview production build
@@ -51,14 +51,12 @@ src/
 ```
 
 ### Key Components
-- `AISparkleIcon`: Core sparkle with 4 variants (gradient/solid/outline/glow)
-- `AIBadge`: Attribution labels with sparkle
-- `AIIconButton`: Icon-only AI triggers
-- `AIButton`: Full AI action buttons with animations
+- `AISparkleIcon`: Core sparkle with 6 variants (color, black, disabled, circle, badge, inline)
+- `AIButton`: Full AI action buttons with 2 variants (combined/outline) and shared gradient styling
 
 ### Routes
-- `/` - Main index page
-- `/ai-showcase` - AI component gallery
+- `/` - AI component showcase (comprehensive gallery)
+- `/ai-showcase` - Redirects to `/`
 - `/button-test` - Button size testing
 
 ### Styling System
@@ -72,7 +70,7 @@ src/
 ### Sparkle Usage
 - **Primary actions**: White sparkle on colored buttons
 - **Secondary**: Black sparkle on white buttons
-- **Attribution**: Light blue badge with darker blue sparkle
+- **Attribution**: Use the `AISparkleIcon` `badge` variant for inline AI labeling
 - **Sizes**: xs(12), sm(16), md(20), lg(24), xl(32)
 
 ### Accessibility
@@ -111,33 +109,34 @@ npm install
 npm run dev
 
 # View AI components
-# Navigate to http://localhost:8080/ai-showcase
+# Navigate to http://localhost:5173/ai-showcase
 ```
 
 ## Component Usage Examples
 
 ```tsx
-// Primary AI button
-<AIButton variant="rotate">
+// Hero AI button (primary actions)
+<AIButton variant="combined" size="large">
+  Summarize with AI
+</AIButton>
+
+// Secondary AI button
+<AIButton variant="outline">
   Generate Report
 </AIButton>
 
-// Attribution badge
-<AIBadge variant="badge" size="default" />
-
 // Sparkle icon with animation
 <AISparkleIcon
-  variant="gradient"
-  size="md"
+  variant="color"
+  size={24}
   animate
 />
 
-// Icon-only trigger
-<AIIconButton
-  variant="gradient"
-  size="large"
-  shape="circle"
-/>
+// Badge attribution
+<AISparkleIcon variant="badge" />
+
+// Circular highlight icon
+<AISparkleIcon variant="circle" animate />
 ```
 
 ## Development Workflow

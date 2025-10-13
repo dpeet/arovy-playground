@@ -3,7 +3,7 @@
 // Shared page layout styles for showcases
 // ============================================
 
-@import './_ai-variables.scss';
+@use './ai-variables' as ai;
 
 // Full-height centered page container
 .showcasePage {
@@ -25,15 +25,11 @@
   font-size: 3rem; // Tailwind text-5xl
   font-weight: 700; // Tailwind font-bold
   margin-bottom: 1rem; // Tailwind mb-4
-  background: linear-gradient(
-    $gradient-primary-angle,
-    $primary-blue 0%,
-    $primary-orange 100%
-  );
+  background: ai.ai-gradient();
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  filter: saturate(1.4) brightness(1.08);
+  @include ai.filter-vibrant;
   display: inline-block;
 }
 

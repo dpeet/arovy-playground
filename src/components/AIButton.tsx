@@ -6,11 +6,11 @@ import AISparkleIcon from "./AISparkleIcon";
 import styles from "./AIButton.module.scss";
 
 interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
-  variant: "rotate" | "shimmer" | "outline" | "combined";
+  variant: "outline" | "combined";
   children?: ReactNode;
   type?: ButtonProps["type"]; // Re-add type as optional to avoid TS errors
-  gradientIntensity?: number; // 0-1, controls gradient vibrancy
   borderWidth?: string; // CSS value like "1px", "2px", etc.
+  borderRadius?: string; // CSS border-radius value for outer and inner corners
 }
 
 const AIButton = (props: AIButtonProps) => {
@@ -21,18 +21,37 @@ const AIButton = (props: AIButtonProps) => {
     onClick,
     onMouseEnter: userMouseEnter,
     onMouseLeave: userMouseLeave,
-    gradientIntensity,
     borderWidth,
+    borderRadius,
+    size = "middle",
     ...restProps
   } = props;
+
+  const buttonSize = size;
+
+  const iconSize = buttonSize === "small" ? 16 : buttonSize === "large" ? 24 : 20;
+
+  const radiusBySize: Record<NonNullable<ButtonProps["size"]>, string> = {
+    small: "4px",
+    middle: "6px",
+    large: "8px"
+  };
+
+  const borderWidthBySize: Record<NonNullable<ButtonProps["size"]>, string> =
+    variant === "combined"
+      ? { small: "1.5px", middle: "2px", large: "2px" }
+      : { small: "1px", middle: "1px", large: "1px" };
+
+  const resolvedBorderRadius = borderRadius ?? radiusBySize[buttonSize];
+  const resolvedBorderWidth = borderWidth ?? borderWidthBySize[buttonSize];
 
   const [isHovered, setIsHovered] = useState(false);
   const [gradientAngle, setGradientAngle] = useState(135);
   const animationRef = useRef<number | null>(null);
   const angleRef = useRef(gradientAngle);
 
-  // Determine if this variant uses gradient animation
-  const animateGradient = variant === "rotate" || variant === "combined";
+  // Only combined variant uses gradient animation
+  const animateGradient = variant === "combined";
 
   useEffect(() => {
     angleRef.current = gradientAngle;
@@ -90,58 +109,15 @@ const AIButton = (props: AIButtonProps) => {
   // Style object for gradient angle (only used by rotate and combined variants)
   const angleStyle = animateGradient ? { '--ai-button-angle': `${gradientAngle}deg` } as React.CSSProperties : undefined;
 
-  // Create style object with CSS variables for intensity and border width
+  // Create style object with CSS variables for border width and radius
   const customStyle: React.CSSProperties = {
     ...angleStyle,
-    ...(gradientIntensity !== undefined && { '--ai-gradient-intensity': gradientIntensity }),
-    ...(borderWidth !== undefined && { '--ai-border-width': borderWidth }),
+    '--ai-border-width': resolvedBorderWidth,
+    '--ai-border-radius': resolvedBorderRadius
   } as React.CSSProperties;
 
   // Render different variants
   switch (variant) {
-    case "rotate":
-      return (
-        <Button
-          type="primary"
-          icon={<AISparkleIcon variant="black" size={20} />}
-          className={cn(
-            styles.aiButton,
-            styles["aiButton--rotate"],
-            getStateClass(),
-            className
-          )}
-          style={customStyle}
-          onClick={onClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...restProps}
-        >
-          {children}
-        </Button>
-      );
-
-    case "shimmer":
-      return (
-        <Button
-          type="primary"
-          icon={<AISparkleIcon variant="black" size={20} />}
-          className={cn(
-            styles.aiButton,
-            styles["aiButton--shimmer"],
-            getStateClass(),
-            className
-          )}
-          style={customStyle}
-          onClick={onClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...restProps}
-        >
-          <div className={styles.aiButton__overlay} />
-          {children}
-        </Button>
-      );
-
     case "outline":
       return (
         <div
@@ -159,7 +135,7 @@ const AIButton = (props: AIButtonProps) => {
             icon={
               <AISparkleIcon
                 variant="color"
-                size={20}
+                size={iconSize}
                 className={styles["aiButton__icon--outline"]}
               />
             }
@@ -170,6 +146,7 @@ const AIButton = (props: AIButtonProps) => {
             )}
             style={customStyle}
             onClick={onClick}
+            size={buttonSize}
             {...restProps}
           >
             {children}
@@ -191,7 +168,7 @@ const AIButton = (props: AIButtonProps) => {
         >
           <Button
             type="primary"
-            icon={<AISparkleIcon variant="black" size={20} />}
+            icon={<AISparkleIcon variant="black" size={iconSize} />}
             className={cn(
               styles.aiButton,
               styles["aiButton--combined"],
@@ -199,6 +176,7 @@ const AIButton = (props: AIButtonProps) => {
             )}
             style={customStyle}
             onClick={onClick}
+            size={buttonSize}
             {...restProps}
           >
             {children}

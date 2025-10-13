@@ -1,11 +1,9 @@
-import { cn } from "@/lib/utils";
 import React from "react";
 
 interface SparkleIconSVGProps {
   className?: string;
   size?: number;
   variant?: "color" | "black" | "disabled";
-  animate?: boolean;
   disableInlineSize?: boolean; // When true, omit inline size styles (let CSS control sizing)
 }
 
@@ -20,7 +18,6 @@ const SparkleIconSVG = ({
   className,
   size = 24,
   variant = "color",
-  animate = false,
   disableInlineSize = false
 }: SparkleIconSVGProps) => {
   // Generate unique IDs to avoid conflicts when multiple icons are on the same page
@@ -52,7 +49,7 @@ const SparkleIconSVG = ({
 
   return (
     <svg
-      className={cn(animate && "animate-pulse", className)}
+      className={className}
       style={disableInlineSize ? undefined : { width: `${size}px`, height: `${size}px` }}
       viewBox="0 0 128 128"
       fill="none"

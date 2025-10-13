@@ -76,6 +76,40 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 }
 
 // ============================================
+// Semantic Color Aliases
+// (More descriptive names for common use cases)
+// ============================================
+
+$gradient-start: $primary-blue;
+$gradient-end: $primary-orange;
+$button-text-light: $white;
+$button-text-dark: $text-dark;
+
+// ============================================
+// Gradient Functions
+// ============================================
+
+// Create gradient with sensible defaults
+@function ai-gradient(
+  $angle: $gradient-primary-angle,
+  $color1: $primary-blue,
+  $color2: $primary-orange,
+  $stop1: 0%,
+  $stop2: 100%
+) {
+  @return linear-gradient($angle, $color1 $stop1, $color2 $stop2);
+}
+
+// Create gradient with specific stops (for combined button variant)
+@function ai-gradient-stops(
+  $angle: $gradient-primary-angle,
+  $color1: $primary-blue,
+  $color2: $primary-orange
+) {
+  @return linear-gradient($angle, $color1 24.61%, $color2 75.39%);
+}
+
+// ============================================
 // Common Mixins
 // ============================================
 
@@ -91,4 +125,17 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 
 @mixin boxShadowLg {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+// Filter state mixins for consistent hover effects
+@mixin filter-idle {
+  filter: saturate(1) brightness(1);
+}
+
+@mixin filter-hover {
+  filter: saturate(1.5) brightness(1.15);
+}
+
+@mixin filter-vibrant {
+  filter: saturate(1.4) brightness(1.08);
 }

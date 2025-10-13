@@ -1,21 +1,28 @@
-# Gradient Animation Effects Guide
+# AI Button Implementation Guide
 
-This guide documents the implementation of two beautiful gradient animation effects: **Rotating Gradient** and **Shimmer Effect**. These effects are used in the AI Button component to create engaging, premium interactions.
+This guide documents the implementation of the **Combined Gradient Button** - a premium AI button with rotating gradient background, animated border, and glow effects. This is the hero button used for primary AI actions.
 
 ---
 
 ## Table of Contents
 
-1. [Rotating Gradient Effect](#rotating-gradient-effect)
-2. [Shimmer Effect](#shimmer-effect)
+1. [Combined Gradient Button](#combined-gradient-button)
+2. [Outline Button (Secondary)](#outline-button-secondary)
 3. [Shared Dependencies](#shared-dependencies)
 4. [Usage Examples](#usage-examples)
+5. [Technical Details](#technical-details)
 
 ---
 
-## Rotating Gradient Effect
+## Combined Gradient Button
 
-The rotating gradient effect smoothly animates the gradient angle from 135° to 315° on hover, creating a dynamic color shift with enhanced saturation and brightness.
+The combined button is the hero AI action button featuring:
+- **Rotating gradient background** (135° to 315° on hover)
+- **Animated gradient border** that rotates in sync
+- **Drop shadow effects** that intensify on hover
+- **Enhanced saturation and brightness** filters
+
+This creates the most premium, attention-grabbing button for primary AI actions.
 
 ### TypeScript/React Implementation
 
@@ -80,33 +87,57 @@ const style = {
 ### SCSS Implementation
 
 ```scss
-// Shared variables (from _ai-variables.scss)
-$primary-blue: #6EB8FF;
-$primary-orange: #FF9E78;
-$default-angle: 135deg;
-$hover-angle: 315deg;
-
-// Rotate variant styles
-.aiButton--rotate {
-  // Dynamic gradient using CSS variable
-  background: linear-gradient(
-    var(--ai-button-angle, #{$default-angle}),
-    $primary-blue 0%,
-    $primary-orange 100%
-  ) !important;
-
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+// Combined variant wrapper with animated gradient border
+.aiButtonWrapper--combined {
+  display: inline-block;
+  padding: var(--ai-border-width, 2px);
+  border-radius: 0.375rem;
   transition: all 0.3s ease;
+  margin: calc(var(--ai-border-width, 2px) * -1);
+
+  &.aiButtonWrapper--idle {
+    background: linear-gradient(
+      var(--ai-button-angle, 135deg),
+      #5AA8E8 24.61%,
+      #E88A6D 75.39%
+    );
+    filter: drop-shadow(3px 3px 6px rgba(68, 163, 255, 0.25))
+            drop-shadow(3px 3px 6px rgba(255, 134, 87, 0.25));
+  }
+
+  &.aiButtonWrapper--hovered {
+    background: linear-gradient(
+      var(--ai-button-angle, 315deg),
+      #6EB8FF 24.61%,
+      #FF9E78 75.39%
+    );
+    filter: drop-shadow(3px 3px 6px rgba(110, 184, 255, 0.35))
+            drop-shadow(3px 3px 6px rgba(255, 158, 120, 0.35));
+  }
+}
+
+// Inner button with rotating gradient background
+.aiButton--combined {
+  --ai-gradient-intensity: 1;
+  --ai-border-width: 2px;
+
+  box-shadow: none !important;
   color: white !important;
 
-  // State modifiers for enhanced visual feedback
   &.aiButton--idle {
-    filter: saturate(1) brightness(1);
+    background: linear-gradient(
+      var(--ai-button-angle, 135deg),
+      #6EB8FF 24.61%,
+      #FF9E78 75.39%
+    ) !important;
   }
 
   &.aiButton--hovered {
-    filter: saturate(1.5) brightness(1.15);
+    background: linear-gradient(
+      var(--ai-button-angle, 315deg),
+      #7FC5FF 24.61%,
+      #FFAB8C 75.39%
+    ) !important;
   }
 }
 ```
@@ -118,87 +149,63 @@ $hover-angle: 315deg;
 - **Bidirectional**: Animates both on hover and hover exit
 - **Enhanced Saturation**: 1.5x saturation + 1.15x brightness on hover
 - **Duration**: 600ms for smooth, noticeable transition
+- **Border Animation**: Gradient border rotates in sync with background
+- **Glow Effects**: Dual-color drop shadows that intensify on hover
 
 ---
 
-## Shimmer Effect
+## Outline Button (Secondary)
 
-The shimmer effect creates an elegant light sweep animation across the button on hover, simulating a reflective surface catching light.
-
-### TypeScript/React Implementation
-
-```tsx
-import { useState } from "react";
-
-// Component state
-const [isHovered, setIsHovered] = useState(false);
-
-// Mouse event handlers
-const handleMouseEnter = () => setIsHovered(true);
-const handleMouseLeave = () => setIsHovered(false);
-
-// Shimmer overlay element (inside button)
-<div className={styles.aiButton__overlay} />
-```
+The outline variant is for secondary AI actions:
+- Static gradient border (no rotation)
+- Subtle gradient colors (30% intensity)
+- White background
+- Color transition on hover
 
 ### SCSS Implementation
 
 ```scss
-// Shared variables
-$primary-blue: #6EB8FF;
-$primary-orange: #FF9E78;
+// Wrapper with gradient border
+.aiButtonWrapper--outline {
+  display: inline-block;
+  padding: var(--ai-border-width, 1px);
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+  margin: calc(var(--ai-border-width) * -1);
 
-// Shimmer variant styles
-.aiButton--shimmer {
-  overflow: hidden;
-  position: relative;
-
-  // Static gradient background
   background: linear-gradient(
     135deg,
-    $primary-blue 0%,
-    $primary-orange 100%
-  ) !important;
-
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  color: white !important;
-}
-
-// Shimmer overlay element
-.aiButton__overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-
-  // Semi-transparent white gradient for shine effect
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
+    #6EB8FF 0%,
+    #FF9E78 100%
   );
 
-  transition: transform 0.8s ease;
-  transform: translateX(-100%);
+  &.aiButtonWrapper--idle {
+    filter: saturate(1) brightness(1);
+  }
 
-  // Trigger shimmer animation on parent hover
-  .aiButton--shimmer.aiButton--hovered & {
-    transform: translateX(100%);
+  &.aiButtonWrapper--hovered {
+    filter: saturate(1.5) brightness(1.15);
+  }
+}
+
+// Inner button
+.aiButton--outline {
+  --ai-gradient-intensity: 0.3;
+  --ai-border-width: 1px;
+
+  background: white !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease;
+
+  &.aiButton--idle {
+    color: #292929 !important;
+  }
+
+  &.aiButton--hovered {
+    color: #6EB8FF !important;
   }
 }
 ```
-
-### Key Features
-
-- **Pure CSS Animation**: Uses CSS transforms for hardware acceleration
-- **Horizontal Sweep**: 90° gradient moves left to right
-- **Timing**: 800ms for elegant, noticeable sweep
-- **Opacity**: 40% white for subtle, premium effect
-- **Non-intrusive**: `pointer-events: none` prevents interaction blocking
 
 ---
 
@@ -212,12 +219,12 @@ $primary-orange: #FF9E78;
 // ============================================
 
 // Primary gradient colors
-$primary-blue: #6EB8FF;      // Light blue from gradient start
-$primary-orange: #FF9E78;    // Peach from gradient end
+$primary-blue: #6EB8FF;
+$primary-orange: #FF9E78;
 
 // Gradient angles
-$gradient-primary-angle: 135deg;  // Default diagonal
-$gradient-hover-angle: 315deg;    // Rotated diagonal
+$gradient-primary-angle: 135deg;
+$gradient-hover-angle: 315deg;
 
 // UI colors
 $text-dark: hsl(0, 0%, 16%);
@@ -248,17 +255,14 @@ $white: white;
 ```scss
 @import '@/styles/_ai-variables.scss';
 
-// Button-specific angle aliases
-$default-angle: $gradient-primary-angle;
-$hover-angle: $gradient-hover-angle;
-
-// Base styles applied to all variants
 .aiButton {
   @include buttonReset;
   @include transitionAll;
 
-  // CSS custom properties for dynamic styling
-  --ai-button-angle: #{$default-angle};
+  color: $text-dark;
+
+  // CSS custom properties
+  --ai-button-angle: #{$gradient-primary-angle};
   --ai-gradient-intensity: 1;
   --ai-border-width: 1px;
 
@@ -277,135 +281,15 @@ $hover-angle: $gradient-hover-angle;
 
 ## Usage Examples
 
-### Full Component Example
+### Component Interface
 
 ```tsx
-import { useState, useEffect, useRef, type ReactNode } from "react";
-import { Button } from "antd";
-import type { ButtonProps } from "antd";
-import AISparkleIcon from "./AISparkleIcon";
-import styles from "./AIButton.module.scss";
-
 interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
-  variant: "rotate" | "shimmer";
+  variant: "combined" | "outline";
   children?: ReactNode;
+  gradientIntensity?: number; // 0-1, controls gradient vibrancy
+  borderWidth?: string; // CSS value like "1px", "2px"
 }
-
-const AIButton = (props: AIButtonProps) => {
-  const {
-    variant,
-    className,
-    children = "Summarize",
-    onClick,
-    onMouseEnter: userMouseEnter,
-    onMouseLeave: userMouseLeave,
-    ...restProps
-  } = props;
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [gradientAngle, setGradientAngle] = useState(135);
-  const animationRef = useRef<number | null>(null);
-  const angleRef = useRef(gradientAngle);
-
-  // Determine if this variant uses gradient animation
-  const animateGradient = variant === "rotate";
-
-  useEffect(() => {
-    angleRef.current = gradientAngle;
-  }, [gradientAngle]);
-
-  useEffect(() => {
-    if (!animateGradient) {
-      setGradientAngle(135);
-      return;
-    }
-
-    const startAngle = angleRef.current;
-    const targetAngle = isHovered ? 315 : 135;
-    const startTime = Date.now();
-    const duration = 600;
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress =
-        progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-      const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
-      setGradientAngle(currentAngle);
-
-      if (progress < 1) {
-        animationRef.current = requestAnimationFrame(animate);
-      }
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [animateGradient, isHovered]);
-
-  const handleMouseEnter: ButtonProps["onMouseEnter"] = (event) => {
-    setIsHovered(true);
-    userMouseEnter?.(event);
-  };
-
-  const handleMouseLeave: ButtonProps["onMouseLeave"] = (event) => {
-    setIsHovered(false);
-    userMouseLeave?.(event);
-  };
-
-  const getStateClass = () =>
-    isHovered ? styles["aiButton--hovered"] : styles["aiButton--idle"];
-
-  const angleStyle = animateGradient
-    ? { '--ai-button-angle': `${gradientAngle}deg` } as React.CSSProperties
-    : undefined;
-
-  switch (variant) {
-    case "rotate":
-      return (
-        <Button
-          type="primary"
-          icon={<AISparkleIcon variant="black" size={20} />}
-          className={`${styles.aiButton} ${styles["aiButton--rotate"]} ${getStateClass()} ${className || ""}`}
-          style={angleStyle}
-          onClick={onClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...restProps}
-        >
-          {children}
-        </Button>
-      );
-
-    case "shimmer":
-      return (
-        <Button
-          type="primary"
-          icon={<AISparkleIcon variant="black" size={20} />}
-          className={`${styles.aiButton} ${styles["aiButton--shimmer"]} ${getStateClass()} ${className || ""}`}
-          onClick={onClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...restProps}
-        >
-          <div className={styles.aiButton__overlay} />
-          {children}
-        </Button>
-      );
-
-    default:
-      return null;
-  }
-};
-
-export default AIButton;
 ```
 
 ### Usage in React Components
@@ -414,66 +298,108 @@ export default AIButton;
 import AIButton from "@/components/AIButton";
 import { toast } from "sonner";
 
-// Rotating gradient button
+// Hero AI button (primary action)
 <AIButton
-  variant="rotate"
-  onClick={() => toast.success("Rotating gradient clicked!")}
+  variant="combined"
+  size="large"
+  onClick={() => toast.success("AI action triggered!")}
 >
-  Generate Summary
+  Summarize with AI
 </AIButton>
 
-// Shimmer effect button
+// Secondary AI button
 <AIButton
-  variant="shimmer"
-  size="large"
-  onClick={() => toast.success("Shimmer effect clicked!")}
+  variant="outline"
+  onClick={() => toast.success("Secondary action!")}
 >
-  Analyze Data
+  Generate Report
+</AIButton>
+
+// Custom border width
+<AIButton
+  variant="combined"
+  borderWidth="3px"
+>
+  Enhanced AI Action
 </AIButton>
 ```
 
 ---
 
-## Technical Notes
+## Technical Details
 
 ### Performance Considerations
 
 1. **requestAnimationFrame**: Ensures animations run at 60fps synchronized with browser repaints
-2. **CSS Transforms**: Shimmer uses `translateX` which is GPU-accelerated
+2. **CSS Variables**: Enable dynamic angle updates without re-rendering
 3. **Cleanup**: Animation frames are properly cancelled in cleanup functions
 4. **Refs**: `useRef` prevents unnecessary re-renders during animation
 
 ### Browser Compatibility
 
-- **CSS Variables**: Supported in all modern browsers (IE11+ with fallbacks)
+- **CSS Variables**: Supported in all modern browsers
 - **Linear Gradients**: Universal support
 - **requestAnimationFrame**: Universal support in modern browsers
+- **drop-shadow**: CSS filter supported in all modern browsers
 
 ### Customization Options
 
-Both effects can be customized via:
+The combined button can be customized via:
 
-- **Colors**: Modify `$primary-blue` and `$primary-orange` in `_ai-variables.scss`
-- **Duration**: Change `duration` constant in animation code
-- **Angles**: Adjust `$default-angle` and `$hover-angle`
-- **Saturation/Brightness**: Modify filter values in hovered state
-- **Shadow**: Adjust `@mixin boxShadowLg` for different elevations
+- **Colors**: Modify color variables in `_ai-variables.scss`
+- **Duration**: Change `duration` constant (600ms default)
+- **Angles**: Adjust `$gradient-primary-angle` (135deg) and `$gradient-hover-angle` (315deg)
+- **Saturation/Brightness**: Modify filter values (1.5x and 1.15x)
+- **Border Width**: Pass `borderWidth` prop or adjust `--ai-border-width`
+- **Shadow Intensity**: Modify drop-shadow opacity values
+
+### Color Palette (HSL Format)
+
+```scss
+// Primary gradient
+$primary-blue: hsl(208, 100%, 72%);     // #6EB8FF
+$primary-orange: hsl(17, 100%, 74%);    // #FF9E78
+
+// Combined idle state
+$combined-blue-idle: hsl(208, 77%, 65%);     // #5AA8E8
+$combined-orange-idle: hsl(17, 77%, 67%);    // #E88A6D
+
+// Combined hover (inner)
+$combined-blue-inner-hover: hsl(208, 100%, 75%);   // #7FC5FF
+$combined-orange-inner-hover: hsl(17, 100%, 77%);  // #FFAB8C
+```
 
 ---
 
 ## Design Rationale
 
-### Rotating Gradient
-- **Use Case**: Primary AI actions that require attention
-- **User Feedback**: Clear indication of interactive element
-- **Premium Feel**: Smooth, sophisticated animation conveys quality
+### Combined Button
+- **Use Case**: Primary AI actions that require maximum attention
+- **User Feedback**: Clear, animated indication of interactive element
+- **Premium Feel**: Rotating gradient + border + glow = ultra-premium
 - **Direction**: 135° to 315° creates diagonal sweep that feels natural
+- **Glow**: Dual-color shadows reinforce gradient direction
 
-### Shimmer Effect
-- **Use Case**: Secondary AI actions or alternative visual style
-- **User Feedback**: Subtle elegance without overwhelming user
-- **Speed**: 800ms is slow enough to be noticed but fast enough to feel responsive
-- **Opacity**: 40% white provides visible shine without washing out gradient
+### Outline Button
+- **Use Case**: Secondary AI actions that need less visual weight
+- **User Feedback**: Subtle gradient border indicates AI capability
+- **Contrast**: White background ensures good text readability
+- **Static**: No rotation keeps it visually subordinate to combined button
+
+---
+
+## Implementation Checklist
+
+When implementing these buttons:
+
+- [ ] Import `AIButton` component
+- [ ] Use `variant="combined"` for primary AI actions
+- [ ] Use `variant="outline"` for secondary AI actions
+- [ ] Add `AISparkleIcon` (automatically included in button)
+- [ ] Test hover states in browser
+- [ ] Verify animation smoothness (60fps)
+- [ ] Check accessibility (keyboard navigation, focus states)
+- [ ] Test on different screen sizes
 
 ---
 
@@ -482,7 +408,8 @@ Both effects can be customized via:
 - `src/components/AIButton.tsx` - Component implementation
 - `src/components/AIButton.module.scss` - Complete styles
 - `src/styles/_ai-variables.scss` - Shared variables and mixins
-- `src/pages/AIIconographyShowcase.tsx` - Live examples
+- `src/pages/AIIconographyShowcase.tsx` - Live showcase
+- `CLAUDE.md` - Project guidelines and usage
 
 ---
 

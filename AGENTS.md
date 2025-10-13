@@ -18,3 +18,7 @@ Automated tests are not yet configured. When adding behavior, outline manual ver
 
 ## Commit & Pull Request Guidelines
 Follow the Conventional Commits style observed in history (`feat:`, `refactor:`, `chore:`). Keep messages present-tense, imperative, and scoped (e.g., `feat: add dashboard status cards`). For PRs, include a succinct summary, link relevant issues, and attach screenshots or screen recordings when UI changes. Note configuration updates and manual test results, and ensure lint/build commands pass locally before requesting review.
+
+## AI Component Inventory
+- `AIButton`: Primary and secondary AI CTA with shared gradient wrapper and optional overrides via CSS variables.
+- `AISparkleIcon`: Sparkle visuals supporting color, black, disabled, circle, badge, and inline variants for reuse across the showcase.

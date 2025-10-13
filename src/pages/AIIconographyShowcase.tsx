@@ -1,35 +1,23 @@
 import { Card, Col, Divider, Input, Row, Space, Table, Typography } from "antd";
-import { toast } from "sonner";
 
-import AIBadge from "../components/AIBadge";
 import AIButton from "../components/AIButton";
-import AIIconButton from "../components/AIIconButton";
 import AISparkleIcon from "../components/AISparkleIcon";
 import type { ColumnsType } from "antd/es/table";
+import { toast } from "sonner";
 
 const { Title, Text, Paragraph } = Typography;
 
 // Button variants for the hero showcase
 const BUTTON_VARIANTS = [
   {
-    variant: "rotate",
-    title: "Rotating Gradient",
-    description: "Smooth gradient rotation on hover with enhanced saturation",
-  },
-  {
-    variant: "shimmer",
-    title: "Shimmer Effect",
-    description: "Elegant shimmer sweep animation on hover",
+    variant: "combined",
+    title: "AI Action Button",
+    description: "Hero AI button with rotating gradient background, animated border, and glow effect",
   },
   {
     variant: "outline",
-    title: "Gradient Outline",
-    description: "Gradient border with color transition on hover",
-  },
-  {
-    variant: "combined",
-    title: "Combined Effect",
-    description: "Rotating gradient background and border with glow",
+    title: "Secondary AI Button",
+    description: "Gradient border with color transition on hover for secondary actions",
   },
 ] as const;
 
@@ -78,14 +66,13 @@ const AIIconographyShowcase = () => {
       title: (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span>Field Name</span>
-          <AISparkleIcon variant="color" size={16} />
+          <AISparkleIcon variant="black" size={16} />
         </div>
       ),
       dataIndex: "fieldName",
       key: "fieldName",
       render: (text: string) => (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <AISparkleIcon variant="black" size={16} />
           <span>{text}</span>
         </div>
       )
@@ -120,28 +107,26 @@ const AIIconographyShowcase = () => {
       <Divider />
 
       {/* Hero Button Showcase */}
-      <Card title="AI Button Variants Overview" style={{ marginBottom: 24 }}>
+      <Card title="AI Button Variants" style={{ marginBottom: 24 }}>
         <Paragraph>
-          Four stunning button designs with gradient animations. Click any button to see the interaction toast.
+          Two core AI button designs: the hero "Combined" button for primary AI actions, and the "Outline" button for secondary actions.
         </Paragraph>
-        <Row gutter={[48, 48]} style={{ marginTop: 32 }}>
+        <Space direction="vertical" size="large" style={{ width: "100%", marginTop: 32 }}>
           {BUTTON_VARIANTS.map(({ variant, title, description }) => (
-            <Col key={variant} xs={24} md={12}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-                <AIButton variant={variant} onClick={() => handleButtonClick(title)}>
-                  Summarize
-                </AIButton>
-                <div style={{ textAlign: "center" }}>
-                  <Text strong style={{ display: "block", marginBottom: 8 }}>{title}</Text>
-                  <Text type="secondary" style={{ fontSize: 14 }}>{description}</Text>
-                </div>
+            <div key={variant} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+              <AIButton variant={variant} onClick={() => handleButtonClick(title)}>
+                Summarize with AI
+              </AIButton>
+              <div style={{ textAlign: "center", maxWidth: 600 }}>
+                <Text strong style={{ display: "block", marginBottom: 8 }}>{title}</Text>
+                <Text type="secondary">{description}</Text>
               </div>
-            </Col>
+            </div>
           ))}
-        </Row>
-        <div style={{ marginTop: 24, textAlign: "center" }}>
+        </Space>
+        <div style={{ marginTop: 32, textAlign: "center" }}>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            Click any button to see the interaction • Hover to see the animations
+            Click any button to see the interaction • Hover to see the gradient animations and glow effects
           </Text>
         </div>
       </Card>
@@ -256,17 +241,6 @@ const AIIconographyShowcase = () => {
             </div>
           </div>
 
-          <div>
-            <Title level={5}>Animated Variants</Title>
-            <Space size="large">
-              <AISparkleIcon variant="color" size={32} animate />
-              <AISparkleIcon variant="black" size={32} animate />
-              <AISparkleIcon variant="circle" animate />
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                Pulse animation for processing states
-              </Text>
-            </Space>
-          </div>
         </Space>
       </Card>
 
@@ -311,24 +285,6 @@ const AIIconographyShowcase = () => {
               The annual recurring revenue amount for this opportunity, calculated based on
               contract terms and product pricing. AI suggested this based on similar deals.
             </Paragraph>
-          </div>
-        </Space>
-      </Card>
-
-      {/* AI Icon Buttons Section */}
-      <Card title="AI Icon Buttons" style={{ marginBottom: 24 }}>
-        <Paragraph type="secondary">
-          Icon-only AI action triggers with gradient, subtle, and ghost variants.
-        </Paragraph>
-        <Space direction="vertical" size="large">
-          <div>
-            <Title level={5}>Icon Button Sizes and Variants</Title>
-            <Space>
-              <AIIconButton variant="gradient" sparkleSize="sm" size="small" />
-              <AIIconButton variant="gradient" sparkleSize="md" />
-              <AIIconButton variant="subtle" sparkleSize="md" size="large" />
-              <AIIconButton variant="ghost" sparkleSize="lg" size="large" shape="circle" />
-            </Space>
           </div>
         </Space>
       </Card>

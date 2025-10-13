@@ -4,7 +4,6 @@ import styles from "./AISparkleIcon.module.scss";
 
 interface AISparkleCircleProps {
   className?: string;
-  animate?: boolean;
 }
 
 /**
@@ -14,10 +13,10 @@ interface AISparkleCircleProps {
  *
  * Use for: Feature cards, empty states, standalone icons
  */
-const AISparkleCircle = ({ className, animate = false }: AISparkleCircleProps) => {
+const AISparkleCircle = ({ className }: AISparkleCircleProps) => {
   return (
     <div className={cn(styles.circle, className)}>
-      <SparkleIconSVG variant="black" animate={animate} disableInlineSize />
+      <SparkleIconSVG variant="black" disableInlineSize />
     </div>
   );
 };

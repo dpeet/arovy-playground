@@ -5,7 +5,6 @@ import styles from "./AISparkleIcon.module.scss";
 interface AISparkleBadgeProps {
   className?: string;
   showLabel?: boolean;
-  animate?: boolean;
 }
 
 /**
@@ -16,14 +15,10 @@ interface AISparkleBadgeProps {
  * Use for: Attribution labels, status indicators, AI-generated tags
  * Background gradient: 90deg, #C8E4FF → #FFBFA6
  */
-const AISparkleBadge = ({
-  className,
-  showLabel = true,
-  animate = false
-}: AISparkleBadgeProps) => {
+const AISparkleBadge = ({ className, showLabel = true }: AISparkleBadgeProps) => {
   return (
     <div className={cn(styles.badge, className)}>
-      <SparkleIconSVG variant="black" animate={animate} disableInlineSize />
+      <SparkleIconSVG variant="black" disableInlineSize />
       {showLabel && <span>AI</span>}
     </div>
   );

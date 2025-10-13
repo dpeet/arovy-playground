@@ -1,29 +1,34 @@
-import { useEffect, useRef, useState } from "react";
-import AIButton from "@/components/AIButton";
 import { Button } from "antd";
+import { useEffect, useRef, useState } from "react";
 import AISparkleIcon from "@/components/AISparkleIcon";
+import AIButton from "@/components/AIButton";
 
 interface ButtonMeasurement {
-  variant: string;
+  variant: TestVariant;
   width: number;
   height: number;
 }
 
+const AI_VARIANTS = ["outline", "combined"] as const;
+type AiVariant = typeof AI_VARIANTS[number];
+type TestVariant = AiVariant | "antd-default" | "antd-primary";
+const TEST_VARIANTS = [...AI_VARIANTS, "antd-default", "antd-primary"] as const;
+
+const isAiVariant = (variant: TestVariant): variant is AiVariant => variant !== "antd-default" && variant !== "antd-primary";
+
 const ButtonSizeTest = () => {
   const [measurements, setMeasurements] = useState<ButtonMeasurement[]>([]);
-  const buttonsRef = useRef<Map<string, HTMLDivElement>>(new Map());
-
-  const variants = ["rotate", "shimmer", "outline", "antd-default", "combined"] as const;
+  const buttonsRef = useRef<Map<TestVariant, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     // Measure all buttons after render
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       const newMeasurements: ButtonMeasurement[] = [];
 
-      variants.forEach(variant => {
+      TEST_VARIANTS.forEach(variant => {
         const element = buttonsRef.current.get(variant);
         if (element) {
-          const button = element.querySelector('button') || element.firstElementChild;
+          const button = element.querySelector("button") || element.firstElementChild;
           if (button) {
             const rect = button.getBoundingClientRect();
             newMeasurements.push({
@@ -38,7 +43,7 @@ const ButtonSizeTest = () => {
       setMeasurements(newMeasurements);
     }, 100);
 
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const allSameHeight = measurements.length > 0 &&
@@ -53,7 +58,7 @@ const ButtonSizeTest = () => {
       <div className="bg-gray-50 p-6 rounded-lg mb-8">
         <h2 className="text-lg font-semibold mb-4">All Variants (Same Content)</h2>
         <div className="flex gap-4 items-center flex-wrap">
-          {variants.map(variant => (
+          {TEST_VARIANTS.map(variant => (
             <div
               key={variant}
               ref={el => {
@@ -61,17 +66,24 @@ const ButtonSizeTest = () => {
               }}
               className="relative"
             >
-              {variant === "antd-default" ? (
+              {isAiVariant(variant) ? (
+                <AIButton variant={variant}>
+                  Summarize
+                </AIButton>
+              ) : variant === "antd-primary" ? (
+                <Button
+                  type="primary"
+                  icon={<AISparkleIcon variant="color" size={20} />}
+                >
+                  Summarize
+                </Button>
+              ) : (
                 <Button
                   type="default"
                   icon={<AISparkleIcon variant="color" size={20} />}
                 >
                   Summarize
                 </Button>
-              ) : (
-                <AIButton variant={variant as any}>
-                  Summarize
-                </AIButton>
               )}
               <div className="absolute -top-6 left-0 text-xs text-gray-600 font-medium">
                 {variant}
@@ -82,19 +94,34 @@ const ButtonSizeTest = () => {
       </div>
 
       <div className="bg-gray-50 p-6 rounded-lg mb-8">
-        <h2 className="text-lg font-semibold mb-4">Gradient Intensity Variations (Outline)</h2>
-        <div className="flex gap-4 items-center flex-wrap">
-          {[0, 0.3, 0.5, 0.7, 1].map(intensity => (
-            <div key={intensity} className="flex flex-col items-center gap-2">
-              <AIButton variant="outline" gradientIntensity={intensity}>
+        <h2 className="text-lg font-semibold mb-4">Size Consistency Test</h2>
+        {(['small', 'middle', 'large'] as const).map(size => (
+          <div key={size} className="mb-4">
+            <h3 className="text-sm font-medium mb-2 text-gray-600">Size: {size}</h3>
+            <div className="flex gap-4 items-center">
+              <AIButton variant="outline" size={size}>
                 Summarize
               </AIButton>
-              <span className="text-xs text-gray-600">
-                {intensity === 0 ? "0 (Gray)" : intensity === 0.3 ? "0.3 (Default)" : intensity === 1 ? "1 (Full)" : intensity}
-              </span>
+              <AIButton variant="combined" size={size}>
+                Summarize
+              </AIButton>
+              <Button
+                type="default"
+                size={size}
+                icon={<AISparkleIcon variant="color" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
+              >
+                Summarize
+              </Button>
+              <Button
+                type="primary"
+                size={size}
+                icon={<AISparkleIcon variant="color" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
+              >
+                Summarize
+              </Button>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       <div className="bg-white border rounded-lg p-6">
@@ -152,9 +179,7 @@ const ButtonSizeTest = () => {
         <div className="mt-6 p-4 rounded-lg bg-blue-50 text-sm">
           <h3 className="font-semibold mb-2">Implementation Note</h3>
           <p className="text-gray-700">
-            The outline and combined variants use wrapper divs with <code className="bg-white px-1 py-0.5 rounded">padding: 2px</code>
-            and <code className="bg-white px-1 py-0.5 rounded">margin: -2px</code> to maintain consistent dimensions
-            while creating gradient border effects.
+            Outline buttons use a 1px wrapper padding while combined buttons use 2px. Each applies a matching negative margin to keep the overall footprint consistent while rendering the gradient borders.
           </p>
         </div>
       </div>
