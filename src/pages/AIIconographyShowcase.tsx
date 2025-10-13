@@ -86,13 +86,19 @@ const AIIconographyShowcase = () => {
       title: "Confidence",
       dataIndex: "confidence",
       key: "confidence",
-      render: (confidence: number) => `${confidence}%`
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => <AISparkleIcon variant="badge" showLabel />
+      render: (confidence: number) => (
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: "14px" }}>{confidence}%</div>
+          <div style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            transform: "translate(25%, -25%)"
+          }}>
+            <AISparkleIcon variant="badge" showLabel={false} />
+          </div>
+        </div>
+      )
     }
   ];
 
