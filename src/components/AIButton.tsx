@@ -51,8 +51,16 @@ const AIButton = (props: AIButtonProps) => {
   const resolvedBorderRadius = borderRadius ?? radiusBySize[buttonSize];
   const resolvedBorderWidth = borderWidth ?? borderWidthBySize[buttonSize];
   const resolvedHeight = heightBySize[buttonSize];
-  const borderWidthValue = Number.parseFloat(resolvedBorderWidth);
-  const adjustedHeight = Number.isFinite(borderWidthValue)
+  const parseBorderWidth = (value: string): number | null => {
+    const numericMatch = value.match(/[-+]?[0-9]*\.?[0-9]+/);
+    if (!numericMatch) {
+      return null;
+    }
+    const numericValue = Number.parseFloat(numericMatch[0]);
+    return Number.isFinite(numericValue) ? numericValue : null;
+  };
+  const borderWidthValue = parseBorderWidth(resolvedBorderWidth);
+  const adjustedHeight = borderWidthValue !== null
     ? Math.max(resolvedHeight - borderWidthValue * 2, 0)
     : resolvedHeight;
   const buttonHeight = `${adjustedHeight}px`;

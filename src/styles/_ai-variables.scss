@@ -35,17 +35,16 @@ $gradient-hover-angle: 315deg;    // Animated gradient hover target
 
 // ============================================
 // Button-Specific Colors
-// (Used for combined variant animations)
+// (Unique variations for button states)
 // ============================================
 
-$combined-blue-idle: #5AA8E8;           // Slightly darker for idle
-$combined-orange-idle: #E88A6D;         // Slightly darker for idle
-$combined-blue-hover: $primary-blue;    // Match primary on hover
-$combined-orange-hover: $primary-orange; // Match primary on hover
-$combined-blue-inner-idle: $primary-blue;
-$combined-orange-inner-idle: $primary-orange;
-$combined-blue-inner-hover: #7FC5FF;    // Lighter on hover
-$combined-orange-inner-hover: #FFAB8C;  // Lighter on hover
+// Border colors for idle state (darker than primary)
+$button-border-idle-blue: #5AA8E8;
+$button-border-idle-orange: #E88A6D;
+
+// Inner button hover colors (lighter than primary)
+$button-inner-hover-blue: #7FC5FF;
+$button-inner-hover-orange: #FFAB8C;
 
 // Drop shadow colors for combined variant
 $shadow-blue-idle: rgba(68, 163, 255, 0.25);

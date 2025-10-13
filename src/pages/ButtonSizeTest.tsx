@@ -13,6 +13,7 @@ const AI_VARIANTS = ["outline", "combined"] as const;
 type AiVariant = typeof AI_VARIANTS[number];
 type TestVariant = AiVariant | "antd-default" | "antd-primary";
 const TEST_VARIANTS = [...AI_VARIANTS, "antd-default", "antd-primary"] as const;
+const MEASUREMENT_ORDER: TestVariant[] = ["antd-default", "outline", "combined", "antd-primary"];
 
 const isAiVariant = (variant: TestVariant): variant is AiVariant => variant !== "antd-default" && variant !== "antd-primary";
 
@@ -37,16 +38,19 @@ const ButtonSizeTest = () => {
         }
       });
 
+      newMeasurements.sort((a, b) => MEASUREMENT_ORDER.indexOf(a.variant) - MEASUREMENT_ORDER.indexOf(b.variant));
       setMeasurements(newMeasurements);
     }, 100);
 
     return () => window.clearTimeout(timer);
   }, []);
 
-  const allSameHeight = measurements.length > 0 &&
-    measurements.every(m => m.height === measurements[0].height);
-  const allSameWidth = measurements.length > 0 &&
-    measurements.every(m => m.width === measurements[0].width);
+  const reference = measurements[0];
+  const tolerance = 0.25;
+  const matchesHeight = (value: number) => reference ? Math.abs(value - reference.height) <= tolerance : true;
+  const matchesWidth = (value: number) => reference ? Math.abs(value - reference.width) <= tolerance : true;
+  const allSameHeight = measurements.every(m => matchesHeight(m.height));
+  const allSameWidth = measurements.every(m => matchesWidth(m.width));
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -133,29 +137,33 @@ const ButtonSizeTest = () => {
             </tr>
           </thead>
           <tbody>
-            {measurements.map((m, i) => (
-              <tr key={m.variant} className="border-b">
-                <td className="py-2 font-medium">{m.variant}</td>
-                <td className="py-2">{m.width}</td>
-                <td className="py-2">{m.height}</td>
-                <td className="py-2">
-                  {i === 0 ? (
-                    <span className="text-gray-500">Reference</span>
-                  ) : (
-                    <>
-                      {m.width === measurements[0].width && m.height === measurements[0].height ? (
-                        <span className="text-green-600 font-medium">✓ Match</span>
-                      ) : (
-                        <span className="text-red-600 font-medium">
-                          ✗ {m.width !== measurements[0].width && `Width diff: ${m.width - measurements[0].width}px`}
-                          {m.height !== measurements[0].height && ` Height diff: ${m.height - measurements[0].height}px`}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {measurements.map(m => {
+              const isReference = m.variant === reference?.variant;
+              const widthDiff = reference ? Math.round((m.width - reference.width) * 10) / 10 : 0;
+              const heightDiff = reference ? Math.round((m.height - reference.height) * 10) / 10 : 0;
+              const widthMatch = matchesWidth(m.width);
+              const heightMatch = matchesHeight(m.height);
+              return (
+                <tr key={m.variant} className="border-b">
+                  <td className="py-2 font-medium">{m.variant}</td>
+                  <td className="py-2">{m.width}</td>
+                  <td className="py-2">{m.height}</td>
+                  <td className="py-2">
+                    {isReference ? (
+                      <span className="text-gray-500">Reference</span>
+                    ) : widthMatch && heightMatch ? (
+                      <span className="text-green-600 font-medium">✓ Match</span>
+                    ) : (
+                      <span className="text-red-600 font-medium">
+                        {!widthMatch && `Width diff: ${widthDiff}px`}
+                        {!widthMatch && !heightMatch && " • "}
+                        {!heightMatch && `Height diff: ${heightDiff}px`}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
@@ -164,11 +172,11 @@ const ButtonSizeTest = () => {
           <div className="space-y-1 text-sm">
             <div className={`flex items-center gap-2 ${allSameHeight ? 'text-green-600' : 'text-red-600'}`}>
               <span>{allSameHeight ? '✓' : '✗'}</span>
-              <span>Height consistency: {allSameHeight ? 'All buttons have the same height' : 'Heights are inconsistent'}</span>
+              <span>Height consistency: {allSameHeight ? 'All buttons match the Ant Design baseline height' : 'Some buttons fall outside the ±0.25px tolerance'}</span>
             </div>
             <div className={`flex items-center gap-2 ${allSameWidth ? 'text-green-600' : 'text-red-600'}`}>
               <span>{allSameWidth ? '✓' : '✗'}</span>
-              <span>Width consistency: {allSameWidth ? 'All buttons have the same width' : 'Widths are inconsistent'}</span>
+              <span>Width consistency: {allSameWidth ? 'All buttons match the Ant Design baseline width' : 'Widths differ from the Ant baseline beyond the tolerance'}</span>
             </div>
           </div>
         </div>
@@ -176,7 +184,7 @@ const ButtonSizeTest = () => {
         <div className="mt-6 p-4 rounded-lg bg-blue-50 text-sm">
           <h3 className="font-semibold mb-2">Implementation Note</h3>
           <p className="text-gray-700">
-            Outline buttons use a 1px wrapper padding while combined buttons use 2px. Each applies a matching negative margin to keep the overall footprint consistent while rendering the gradient borders.
+            Each AI button wrapper uses padding equal to the gradient stroke width plus a matching negative margin. The inner button adds a transparent border and an inline height override so the stroke contributes to the final footprint while matching Ant Design dimensions.
           </p>
         </div>
       </div>

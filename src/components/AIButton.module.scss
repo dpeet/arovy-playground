@@ -103,8 +103,8 @@ $hover-angle: ai.$gradient-hover-angle;
   border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));
   background: ai.ai-gradient-stops(
     var(--ai-button-angle, #{$default-angle}),
-    ai.$combined-blue-idle,
-    ai.$combined-orange-idle
+    ai.$button-border-idle-blue,
+    ai.$button-border-idle-orange
   );
   margin: calc(var(--ai-border-width, 1px) * -1);
   @include ai.transitionAll;
@@ -117,8 +117,8 @@ $hover-angle: ai.$gradient-hover-angle;
   &.aiButtonWrapper--hovered {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
-      ai.$combined-blue-hover,
-      ai.$combined-orange-hover
+      ai.$primary-blue,
+      ai.$primary-orange
     );
     filter: drop-shadow(3px 3px 6px ai.$shadow-blue-hover)
             drop-shadow(3px 3px 6px ai.$shadow-orange-hover);
@@ -140,16 +140,16 @@ $hover-angle: ai.$gradient-hover-angle;
   &.aiButton--idle {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$default-angle}),
-      ai.$combined-blue-inner-idle,
-      ai.$combined-orange-inner-idle
+      ai.$primary-blue,
+      ai.$primary-orange
     ) !important;
   }
 
   &.aiButton--hovered {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
-      ai.$combined-blue-inner-hover,
-      ai.$combined-orange-inner-hover
+      ai.$button-inner-hover-blue,
+      ai.$button-inner-hover-orange
     ) !important;
   }
 }
