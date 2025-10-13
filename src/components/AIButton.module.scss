@@ -43,35 +43,17 @@ $hover-angle: ai.$gradient-hover-angle;
   position: relative;
   display: inline-flex;
   align-items: stretch;
-  border-radius: var(--ai-border-radius, 6px);
+  padding: var(--ai-border-width, 1px);
+  border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));
+  background: ai.ai-gradient();
+  margin: calc(var(--ai-border-width, 1px) * -1);
   @include ai.transitionAll;
 
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: var(--ai-border-width, 1px);
-    box-sizing: border-box;
-    background: ai.ai-gradient();
-    pointer-events: none;
-    z-index: 0;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    transition: filter 300ms ease;
-  }
-
-  &.aiButtonWrapper--idle::before {
+  &.aiButtonWrapper--idle {
     @include ai.filter-idle;
   }
 
-  &.aiButtonWrapper--hovered::before {
+  &.aiButtonWrapper--hovered {
     @include ai.filter-hover;
   }
 }
@@ -84,8 +66,8 @@ $hover-angle: ai.$gradient-hover-angle;
   box-shadow: none !important;
   background-clip: padding-box;
   border-radius: var(--ai-border-radius, 6px);
-  position: relative;
-  z-index: 1;
+  border: var(--ai-border-width, 1px) solid transparent;
+  box-sizing: border-box;
   @include ai.transitionAll;
 
   &.aiButton--idle {
@@ -117,33 +99,15 @@ $hover-angle: ai.$gradient-hover-angle;
   position: relative;
   display: inline-flex;
   align-items: stretch;
-  border-radius: var(--ai-border-radius, 6px);
+  padding: var(--ai-border-width, 1px);
+  border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));
+  background: ai.ai-gradient-stops(
+    var(--ai-button-angle, #{$default-angle}),
+    ai.$combined-blue-idle,
+    ai.$combined-orange-idle
+  );
+  margin: calc(var(--ai-border-width, 1px) * -1);
   @include ai.transitionAll;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: var(--ai-border-width, 2px);
-    box-sizing: border-box;
-    background: ai.ai-gradient-stops(
-      var(--ai-button-angle, #{$default-angle}),
-      ai.$combined-blue-idle,
-      ai.$combined-orange-idle
-    );
-    pointer-events: none;
-    z-index: 0;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    transition: background 300ms ease, filter 300ms ease;
-  }
 
   &.aiButtonWrapper--idle {
     filter: drop-shadow(3px 3px 6px ai.$shadow-blue-idle)
@@ -151,33 +115,27 @@ $hover-angle: ai.$gradient-hover-angle;
   }
 
   &.aiButtonWrapper--hovered {
-    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-hover)
-            drop-shadow(3px 3px 6px ai.$shadow-orange-hover);
-  }
-
-  &.aiButtonWrapper--hovered::before {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
       ai.$combined-blue-hover,
       ai.$combined-orange-hover
     );
-    @include ai.filter-hover;
-  }
-
-  &.aiButtonWrapper--idle::before {
-    @include ai.filter-idle;
+    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-hover)
+            drop-shadow(3px 3px 6px ai.$shadow-orange-hover);
   }
 }
 
 // Inner button for combined variant
 .aiButton--combined {
-  --ai-border-width: 2px;
+  --ai-border-width: 1px;
 
   box-shadow: none !important;
   color: ai.$button-text-light !important;
   position: relative;
   z-index: 1;
   border-radius: var(--ai-border-radius, 6px);
+  border: var(--ai-border-width, 1px) solid transparent;
+  box-sizing: border-box;
 
   &.aiButton--idle {
     background: ai.ai-gradient-stops(
@@ -213,6 +171,10 @@ $hover-angle: ai.$gradient-hover-angle;
 
     // Ensure hover states don't add unwanted styles
     border-color: transparent;
+
+    padding-inline: max(0px, calc(15px - var(--ai-border-width, 1px)));
+    padding-block: max(0px, calc(4px - var(--ai-border-width, 1px)));
+    height: calc(32px - (var(--ai-border-width, 1px) * 2))!important;
   }
 }
 
@@ -238,4 +200,16 @@ $hover-angle: ai.$gradient-hover-angle;
     border-color: transparent !important;
     background: ai.$white !important;
   }
+}
+
+.aiButton.ant-btn-sm {
+  padding-inline: max(0px, calc(7px - var(--ai-border-width, 1px)));
+  padding-block: max(0px, calc(2px - var(--ai-border-width, 1px)));
+  height: calc(24px - (var(--ai-border-width, 1px) * 2));
+}
+
+.aiButton.ant-btn-lg {
+  padding-inline: max(0px, calc(19px - var(--ai-border-width, 1px)));
+  padding-block: max(0px, calc(7px - var(--ai-border-width, 1px)));
+  height: calc(40px - (var(--ai-border-width, 1px) * 2));
 }

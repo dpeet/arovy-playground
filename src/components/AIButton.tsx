@@ -39,11 +39,23 @@ const AIButton = (props: AIButtonProps) => {
 
   const borderWidthBySize: Record<NonNullable<ButtonProps["size"]>, string> =
     variant === "combined"
-      ? { small: "1.5px", middle: "2px", large: "2px" }
+      ? { small: "1px", middle: "1px", large: "1px" }
       : { small: "1px", middle: "1px", large: "1px" };
+
+  const heightBySize: Record<NonNullable<ButtonProps["size"]>, number> = {
+    small: 24,
+    middle: 32,
+    large: 40
+  };
 
   const resolvedBorderRadius = borderRadius ?? radiusBySize[buttonSize];
   const resolvedBorderWidth = borderWidth ?? borderWidthBySize[buttonSize];
+  const resolvedHeight = heightBySize[buttonSize];
+  const borderWidthValue = Number.parseFloat(resolvedBorderWidth);
+  const adjustedHeight = Number.isFinite(borderWidthValue)
+    ? Math.max(resolvedHeight - borderWidthValue * 2, 0)
+    : resolvedHeight;
+  const buttonHeight = `${adjustedHeight}px`;
 
   const [isHovered, setIsHovered] = useState(false);
   const [gradientAngle, setGradientAngle] = useState(135);
@@ -115,6 +127,10 @@ const AIButton = (props: AIButtonProps) => {
     '--ai-border-width': resolvedBorderWidth,
     '--ai-border-radius': resolvedBorderRadius
   } as React.CSSProperties;
+  const buttonStyle: React.CSSProperties = {
+    ...customStyle,
+    height: buttonHeight
+  };
 
   // Render different variants
   switch (variant) {
@@ -144,7 +160,7 @@ const AIButton = (props: AIButtonProps) => {
               styles["aiButton--outline"],
               getStateClass()
             )}
-            style={customStyle}
+            style={buttonStyle}
             onClick={onClick}
             size={buttonSize}
             {...restProps}
@@ -174,7 +190,7 @@ const AIButton = (props: AIButtonProps) => {
               styles["aiButton--combined"],
               getStateClass()
             )}
-            style={customStyle}
+            style={buttonStyle}
             onClick={onClick}
             size={buttonSize}
             {...restProps}

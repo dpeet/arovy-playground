@@ -18,7 +18,7 @@ const isAiVariant = (variant: TestVariant): variant is AiVariant => variant !== 
 
 const ButtonSizeTest = () => {
   const [measurements, setMeasurements] = useState<ButtonMeasurement[]>([]);
-  const buttonsRef = useRef<Map<TestVariant, HTMLDivElement>>(new Map());
+  const wrappersRef = useRef<Map<TestVariant, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     // Measure all buttons after render
@@ -26,17 +26,14 @@ const ButtonSizeTest = () => {
       const newMeasurements: ButtonMeasurement[] = [];
 
       TEST_VARIANTS.forEach(variant => {
-        const element = buttonsRef.current.get(variant);
-        if (element) {
-          const button = element.querySelector("button") || element.firstElementChild;
-          if (button) {
-            const rect = button.getBoundingClientRect();
-            newMeasurements.push({
-              variant,
-              width: Math.round(rect.width * 10) / 10,
-              height: Math.round(rect.height * 10) / 10,
-            });
-          }
+        const wrapper = wrappersRef.current.get(variant);
+        if (wrapper) {
+          const rect = wrapper.getBoundingClientRect();
+          newMeasurements.push({
+            variant,
+            width: Math.round(rect.width * 10) / 10,
+            height: Math.round(rect.height * 10) / 10,
+          });
         }
       });
 
@@ -62,7 +59,7 @@ const ButtonSizeTest = () => {
             <div
               key={variant}
               ref={el => {
-                if (el) buttonsRef.current.set(variant, el);
+                if (el) wrappersRef.current.set(variant, el);
               }}
               className="relative"
             >

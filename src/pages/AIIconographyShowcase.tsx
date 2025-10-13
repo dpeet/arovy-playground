@@ -1,6 +1,7 @@
 import { Card, Col, Divider, Input, Row, Space, Table, Typography } from "antd";
 
 import AIButton from "../components/AIButton";
+import AIIconButton from "../components/AIIconButton";
 import AISparkleIcon from "../components/AISparkleIcon";
 import type { ColumnsType } from "antd/es/table";
 import { toast } from "sonner";
@@ -66,7 +67,11 @@ const AIIconographyShowcase = () => {
       title: (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span>Field Name</span>
-          <AISparkleIcon variant="black" size={16} />
+          <AIIconButton
+            iconSize="small"
+            onClick={() => toast.info("AI sorting activated!")}
+            aria-label="Sort with AI"
+          />
         </div>
       ),
       dataIndex: "fieldName",
@@ -135,6 +140,84 @@ const AIIconographyShowcase = () => {
             Click any button to see the interaction • Hover to see the gradient animations and glow effects
           </Text>
         </div>
+      </Card>
+
+      <Divider />
+
+      {/* Icon Button Showcase */}
+      <Card title="AI Icon Button" style={{ marginBottom: 24 }}>
+        <Paragraph>
+          Icon-only button that transitions from black to gradient on hover. Perfect for subtle AI actions in toolbars, table headers, and compact UIs.
+        </Paragraph>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <div>
+            <Title level={5}>Button Sizes</Title>
+            <Space size="large">
+              <div style={{ textAlign: "center" }}>
+                <AIIconButton
+                  iconSize="small"
+                  onClick={() => toast.success("Small icon button clicked!")}
+                  aria-label="Small AI action"
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11 }}>Small (16px)</Text>
+                </div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <AIIconButton
+                  iconSize="medium"
+                  onClick={() => toast.success("Medium icon button clicked!")}
+                  aria-label="Medium AI action"
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11 }}>Medium (20px)</Text>
+                </div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <AIIconButton
+                  iconSize="large"
+                  onClick={() => toast.success("Large icon button clicked!")}
+                  aria-label="Large AI action"
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11 }}>Large (24px)</Text>
+                </div>
+              </div>
+            </Space>
+          </div>
+
+          <div>
+            <Title level={5}>Interactive States</Title>
+            <Space size="large">
+              <div style={{ textAlign: "center" }}>
+                <AIIconButton
+                  iconSize="medium"
+                  onClick={() => toast.success("Active button clicked!")}
+                  aria-label="Active AI action"
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11 }}>Normal</Text>
+                </div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <AIIconButton
+                  iconSize="medium"
+                  disabled
+                  aria-label="Disabled AI action"
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11 }}>Disabled</Text>
+                </div>
+              </div>
+            </Space>
+          </div>
+
+          <div>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              Hover over the buttons to see the smooth transition from black to gradient • Click to see the interaction
+            </Text>
+          </div>
+        </Space>
       </Card>
 
       <Divider />

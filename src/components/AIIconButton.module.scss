@@ -1,0 +1,129 @@
+// ============================================
+// AI Icon Button Styles
+// Icon-only button with black-to-gradient hover transition
+// ============================================
+
+// Import shared AI component variables with namespace
+@use '@/styles/ai-variables' as ai;
+
+.aiIconButton {
+  // Reset and base styles
+  @include ai.buttonReset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 4px;
+  position: relative;
+  @include ai.transitionAll;
+
+  // Icon wrapper for dual-icon transition technique
+  .iconWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  // Position both icons in the same space
+  .iconBlack,
+  .iconColor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+
+  // Default state: show black, hide color
+  .iconBlack {
+    opacity: 1;
+  }
+
+  .iconColor {
+    opacity: 0;
+  }
+
+  // Hover state styles
+  &:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.02); // Subtle background
+
+    // Transition icons: hide black, show color
+    .iconBlack {
+      opacity: 0;
+    }
+
+    .iconColor {
+      opacity: 1;
+    }
+  }
+
+  // Focus styles for accessibility
+  &:focus-visible {
+    outline: 2px solid ai.$primary-blue;
+    outline-offset: 1px;
+  }
+
+  // Active/pressed state
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  // Disabled state
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  // Size variants
+  &--small {
+    padding: 3px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  &--medium {
+    padding: 4px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+
+  &--large {
+    padding: 5px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+}
+
+// Override Ant Design button styles
+.aiIconButton.ant-btn {
+  // Remove Ant's default hover effects
+  &:hover {
+    color: inherit;
+    border-color: transparent;
+  }
+
+  // Remove the focus shadow
+  &:focus {
+    box-shadow: none;
+  }
+
+  // Ensure text button has no background by default
+  &.ant-btn-text {
+    background: transparent;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  // Remove the ripple effect element
+  &::before {
+    display: none;
+  }
+}

@@ -32,11 +32,6 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    /* AI Button Gradients */
-    --gradient-ai-primary: linear-gradient(135deg, hsl(207 70% 63%) 0%, hsl(18 72% 61%) 100%);
-    --gradient-ai-hover: linear-gradient(135deg, hsl(207 75% 68%) 0%, hsl(18 77% 66%) 100%);
-    --gradient-ai-border: linear-gradient(135deg, hsl(207 65% 58%) 0%, hsl(18 67% 56%) 100%);
-
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-gradient: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
