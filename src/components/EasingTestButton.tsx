@@ -3,6 +3,7 @@ import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
 import type { EasingFunction } from "@/lib/easing";
+import { easeInCubic } from "@/lib/easing";
 import SparkleIconSVG from "./SparkleIconSVG";
 import styles from "./AIButton.module.scss";
 
@@ -40,16 +41,19 @@ interface EasingTestButtonProps extends Omit<ButtonProps, 'type'> {
   easingFunction: EasingFunction;
   easingLabel: string;
   children?: string;
+  useSymmetricEasing?: boolean; // If true, uses easeIn variant for exit
 }
 
 /**
  * Test button component for comparing different easing functions
  * Identical to AIButton hero variant but with customizable easing
+ * Supports bidirectional easing (different functions for enter/exit)
  */
 const EasingTestButton = (props: EasingTestButtonProps) => {
   const {
     easingFunction,
     easingLabel,
+    useSymmetricEasing = false,
     className,
     children = "Summarize",
     onClick,
@@ -85,7 +89,16 @@ const EasingTestButton = (props: EasingTestButtonProps) => {
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = easingFunction(progress);
+
+      // Use the provided easing for enter, and optionally use its inverse for exit
+      let easeProgress: number;
+      if (useSymmetricEasing && !isHovered) {
+        // On exit, use easeInCubic for symmetric feel
+        easeProgress = easeInCubic(progress);
+      } else {
+        // On enter, use the provided easing function
+        easeProgress = easingFunction(progress);
+      }
 
       const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
       setGradientAngle(currentAngle);
@@ -102,7 +115,7 @@ const EasingTestButton = (props: EasingTestButtonProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [easingFunction, isHovered]);
+  }, [easingFunction, useSymmetricEasing, isHovered]);
 
   const handleMouseEnter: ButtonProps["onMouseEnter"] = (event) => {
     setIsHovered(true);

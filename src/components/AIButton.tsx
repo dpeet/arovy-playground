@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type ReactNode, type CSSProperties } from 
 import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
-import { easeOutExpo } from "@/lib/easing";
+import { easeOutCubic, easeInCubic } from "@/lib/easing";
 import SparkleIconSVG from "./SparkleIconSVG";
 import styles from "./AIButton.module.scss";
 
@@ -88,7 +88,10 @@ const AIButton = (props: AIButtonProps) => {
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = easeOutExpo(progress);
+      // Use easeOutCubic when entering (fast start, slow landing)
+      // Use easeInCubic when exiting (slow start, fast exit)
+      const easingFn = isHovered ? easeOutCubic : easeInCubic;
+      const easeProgress = easingFn(progress);
 
       const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
       setGradientAngle(currentAngle);

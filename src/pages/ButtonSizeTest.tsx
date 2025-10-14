@@ -158,6 +158,7 @@ const ButtonSizeTest = () => {
             <EasingTestButton
               easingFunction={easeOutQuad}
               easingLabel="easeOutQuad"
+              useSymmetricEasing
             >
               Summarize
             </EasingTestButton>
@@ -167,12 +168,18 @@ const ButtonSizeTest = () => {
           </div>
 
           <div className="flex flex-col items-center">
-            <EasingTestButton
-              easingFunction={easeOutCubic}
-              easingLabel="easeOutCubic"
-            >
-              Summarize
-            </EasingTestButton>
+            <div className="relative">
+              <EasingTestButton
+                easingFunction={easeOutCubic}
+                easingLabel="easeOutCubic"
+                useSymmetricEasing
+              >
+                Summarize
+              </EasingTestButton>
+              <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                ACTIVE
+              </div>
+            </div>
             <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
               Moderate, balanced
             </div>
@@ -182,6 +189,7 @@ const ButtonSizeTest = () => {
             <EasingTestButton
               easingFunction={easeOutQuart}
               easingLabel="easeOutQuart"
+              useSymmetricEasing
             >
               Summarize
             </EasingTestButton>
@@ -191,17 +199,13 @@ const ButtonSizeTest = () => {
           </div>
 
           <div className="flex flex-col items-center">
-            <div className="relative">
-              <EasingTestButton
-                easingFunction={easeOutExpo}
-                easingLabel="easeOutExpo"
-              >
-                Summarize
-              </EasingTestButton>
-              <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
-                ACTIVE
-              </div>
-            </div>
+            <EasingTestButton
+              easingFunction={easeOutExpo}
+              easingLabel="easeOutExpo"
+              useSymmetricEasing
+            >
+              Summarize
+            </EasingTestButton>
             <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
               Very aggressive, dramatic
             </div>
@@ -211,6 +215,7 @@ const ButtonSizeTest = () => {
             <EasingTestButton
               easingFunction={easeOutCirc}
               easingLabel="easeOutCirc"
+              useSymmetricEasing
             >
               Summarize
             </EasingTestButton>
@@ -223,6 +228,7 @@ const ButtonSizeTest = () => {
             <EasingTestButton
               easingFunction={easeOutBack}
               easingLabel="easeOutBack"
+              useSymmetricEasing
             >
               Summarize
             </EasingTestButton>
@@ -234,10 +240,16 @@ const ButtonSizeTest = () => {
 
         <div className="mt-6 p-4 rounded-lg bg-blue-50 text-sm">
           <h3 className="font-semibold mb-2">Current Implementation</h3>
-          <p className="text-gray-700">
-            The AIButton component currently uses <code className="bg-blue-100 px-1 py-0.5 rounded">easeOutExpo</code> for gradient rotation.
-            This creates a dramatic, high-energy feel with very aggressive deceleration.
-            Hover over each button above to compare and find your preferred animation curve.
+          <p className="text-gray-700 mb-2">
+            The AIButton component now uses <strong>bidirectional easing</strong> for more natural animations:
+          </p>
+          <ul className="text-gray-700 text-sm list-disc list-inside space-y-1">
+            <li><code className="bg-blue-100 px-1 py-0.5 rounded">easeOutCubic</code> on hover-in (fast start → smooth landing)</li>
+            <li><code className="bg-blue-100 px-1 py-0.5 rounded">easeInCubic</code> on hover-out (slow start → fast exit)</li>
+          </ul>
+          <p className="text-gray-700 mt-2">
+            This creates symmetric, balanced motion that feels more natural than using the same easing in both directions.
+            All test buttons above use the same bidirectional approach.
           </p>
         </div>
       </div>

@@ -22,3 +22,60 @@ Use Conventional Commits (`feat:`, `refactor:`, `chore:`). Keep messages imperat
 ## AI Component Inventory
 - `AIButton`: Gradient-backed CTA supporting primary/secondary variants; adjust via CSS variables.
 - `AISparkleIcon`: Sparkle accents with color, disabled, circle, badge, and inline modes for reuse across the showcase.
+
+## IMPORTANT: AIButton Gradient Border Technique
+
+### The Padding-Based Border Trick
+The `AIButton` component uses a **wrapper-padding technique** to create gradient borders, since CSS does not natively support `border-image` with `border-radius`.
+
+**How It Works:**
+```
+┌─────────────────────────────────────┐
+│ Wrapper (gradient background)       │ ← Gradient shows here
+│  ┌───────────────────────────────┐  │
+│  │ Inner Button (solid/gradient) │  │ ← Covers center
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
+     ↑ Padding creates "border" effect
+```
+
+### Critical Implementation Rules
+
+1. **Wrapper Must Have:**
+   - `padding: var(--ai-border-width, 1px)` — Creates border thickness
+   - `background: [gradient]` — The visible "border" color
+   - `border-radius: calc(var(--ai-border-radius) + var(--ai-border-width))` — Outer radius
+
+2. **Inner Button Must NOT Have:**
+   - ❌ **NO `border` property** — Any border (even transparent) creates a dark line
+   - ❌ **NO `border: 1px solid transparent`** — This breaks the effect
+   - ✅ Only `border-radius: var(--ai-border-radius)` — Inner radius
+
+3. **Why This Matters:**
+   - The wrapper's `padding` creates a gap between wrapper edge and button edge
+   - The wrapper's `background` shows through this gap = visual border
+   - Any `border` on the inner button adds an extra layer = dark line artifact
+
+### Example (Correct Implementation)
+```scss
+.aiButtonWrapper--hero {
+  padding: 1px;
+  background: linear-gradient(135deg, #6EB8FF, #FF9E78);
+  border-radius: 7px;
+}
+
+.aiButton--hero {
+  background: linear-gradient(135deg, #7FC5FF, #FFAB8C);
+  border-radius: 6px;
+  // NO border property here!
+}
+```
+
+### Common Mistakes to Avoid
+- ❌ Adding `border: 1px solid transparent` to inner button
+- ❌ Using CSS `mask-composite` technique (complex and unreliable)
+- ❌ Forgetting to remove border when debugging
+- ✅ Keep wrapper padding = border thickness
+- ✅ Keep inner button border-free

@@ -156,3 +156,87 @@ npm run dev
 - **Ant Design 5.27** for base components
 - **React Router 6.30** for routing
 - **clsx** + **tailwind-merge** for className utilities
+
+## IMPORTANT: Gradient Border Implementation
+
+### The Padding-Based Border Technique
+
+The `AIButton` hero and hero-outline variants use a **critical wrapper-padding technique** to achieve gradient borders. This is NOT a standard CSS pattern and must be preserved exactly.
+
+#### Why We Need This
+CSS does not support `border-image` with `border-radius`, so we use a clever workaround:
+
+```
+┌──────────────────────────────────┐
+│ Wrapper DIV (gradient bg)        │ ← Gradient "border"
+│  ┌────────────────────────────┐  │
+│  │ Button (gradient fill)     │  │ ← Inner content
+│  └────────────────────────────┘  │
+└──────────────────────────────────┘
+     ↑ Padding = border thickness
+```
+
+#### Critical Rules - DO NOT VIOLATE
+
+**1. Wrapper Element Requirements:**
+```scss
+.aiButtonWrapper--hero {
+  padding: var(--ai-border-width, 1px);           // Creates border space
+  background: linear-gradient(...);               // The "border" color
+  border-radius: calc(radius + border-width);     // Outer corner
+  margin: calc(var(--ai-border-width) * -1);      // Negative margin offset
+}
+```
+
+**2. Inner Button Requirements:**
+```scss
+.aiButton--hero {
+  background: linear-gradient(...);     // Inner fill
+  border-radius: var(--ai-border-radius);  // Inner corner
+  // ❌ NEVER add border property here
+  // ❌ NEVER add border: 1px solid transparent
+  // ❌ NEVER add any border at all
+}
+```
+
+#### Why NO Border on Inner Button?
+
+**Any `border` property on the inner button creates a dark line artifact:**
+- `border: 1px solid transparent` → Dark 1px gap appears
+- `border: 1px solid rgba(0,0,0,0)` → Same dark gap
+- Even transparent borders occupy space and create visual artifacts
+
+The wrapper's `padding` already creates the space for the border effect. The wrapper's `background` shows through that space. Adding a border to the inner button creates an **extra layer** between the wrapper background and button background.
+
+#### Files That Implement This
+
+- `src/components/AIButton.tsx` - Wrapper structure (lines 139-209)
+- `src/components/AIButton.module.scss` - Styles (lines 107-143, 151-179)
+- Both `.aiButtonWrapper--hero` and `.aiButtonWrapper--hero-outline` use this technique
+
+#### Common Mistakes to Avoid
+
+❌ **WRONG** - Dark line appears:
+```scss
+.aiButton--hero {
+  border: 1px solid transparent;  // Creates artifact
+}
+```
+
+✅ **CORRECT** - Clean gradient border:
+```scss
+.aiButton--hero {
+  border-radius: var(--ai-border-radius);
+  // No border property at all
+}
+```
+
+#### Animation Details
+
+The hero variant animates its gradient angle from 135° to 315° on hover:
+- `--ai-button-angle` CSS variable drives rotation
+- Both wrapper background AND inner background rotate together
+- Border and fill gradients use same angle for seamless effect
+- Duration: 300ms with `easeOutCubic` easing
+
+See `GRADIENT_EFFECTS_GUIDE.md` for complete implementation details.
