@@ -3,7 +3,9 @@ import React from "react";
 interface SparkleIconSVGProps {
   className?: string;
   size?: number;
-  variant?: "color" | "black" | "white" | "disabled";
+  variant?: "color" | "black" | "white" | "disabled" | "custom";
+  customColor?: string; // Custom color to use when variant is "custom"
+  customStrokeColor?: string; // Custom stroke color (optional, defaults to customColor)
   disableInlineSize?: boolean; // When true, omit inline size styles (let CSS control sizing)
 }
 
@@ -18,11 +20,29 @@ const SparkleIconSVG = ({
   className,
   size = 24,
   variant = "color",
+  customColor,
+  customStrokeColor,
   disableInlineSize = false
 }: SparkleIconSVGProps) => {
   // Generate unique IDs to avoid conflicts when multiple icons are on the same page
   const gradientId = React.useId();
   const strokeGradientId = React.useId();
+
+  // Get CSS custom properties for consistent colors
+  const getCSSVariable = (varName: string): string => {
+    if (typeof window !== 'undefined') {
+      return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || '';
+    }
+    return '';
+  };
+
+  const colors = React.useMemo(() => ({
+    primaryBlue: getCSSVariable('--ai-primary-blue') || '#6EB8FF',
+    primaryOrange: getCSSVariable('--ai-primary-orange') || '#FF9E78',
+    strokeBlue: getCSSVariable('--ai-stroke-blue') || '#44A3FF',
+    strokeOrange: getCSSVariable('--ai-stroke-orange') || '#FF8657',
+    disabledGrey: getCSSVariable('--ai-disabled-grey') || '#949494'
+  }), []);
 
   // Determine fill color based on variant
   const getFillColor = (): string => {
@@ -32,7 +52,9 @@ const SparkleIconSVG = ({
       case "white":
         return "#FFFFFF";
       case "disabled":
-        return "#949494";
+        return colors.disabledGrey;
+      case "custom":
+        return customColor || "currentColor"; // Use custom color or inherit from CSS
       case "color":
         return `url(#${gradientId})`;
       default:
@@ -43,6 +65,9 @@ const SparkleIconSVG = ({
   const getStrokeColor = (): string => {
     if (variant === "color") {
       return `url(#${strokeGradientId})`;
+    }
+    if (variant === "custom") {
+      return customStrokeColor || customColor || "currentColor";
     }
     return getFillColor();
   };
@@ -60,12 +85,12 @@ const SparkleIconSVG = ({
       {useGradient && (
         <defs>
           <linearGradient id={gradientId} x1="60" y1="27" x2="101" y2="68" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#6EB8FF" />
-            <stop offset="1" stopColor="#FF9E78" />
+            <stop stopColor={colors.primaryBlue} />
+            <stop offset="1" stopColor={colors.primaryOrange} />
           </linearGradient>
           <linearGradient id={strokeGradientId} x1="61" y1="28" x2="100" y2="66.5" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#44A3FF" />
-            <stop offset="1" stopColor="#FF8657" />
+            <stop stopColor={colors.strokeBlue} />
+            <stop offset="1" stopColor={colors.strokeOrange} />
           </linearGradient>
         </defs>
       )}

@@ -35,6 +35,13 @@ All colors MUST be HSL.
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-gradient: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* AI Component Colors */
+    --ai-primary-blue: #6EB8FF;
+    --ai-primary-orange: #FF9E78;
+    --ai-stroke-blue: #44A3FF;
+    --ai-stroke-orange: #FF8657;
+    --ai-disabled-grey: #949494;
   }
 
   .dark {

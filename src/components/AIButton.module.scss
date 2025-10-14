@@ -1,13 +1,32 @@
 // ============================================
-// AIButton SCSS Module - Modern Sass with @use
+// AIButton SCSS Module
 // ============================================
 
 // Import shared AI component variables with namespace
 @use '@/styles/ai-variables' as ai;
 
-// Button-specific angle aliases for readability
+// ============================================
+// Button-Specific Variables
+// ============================================
+
+// Gradient angles
 $default-angle: ai.$gradient-primary-angle;
 $hover-angle: ai.$gradient-hover-angle;
+
+// Button-specific colors
+$button-border-idle-blue: #5AA8E8;
+$button-border-idle-orange: #E88A6D;
+$button-inner-hover-blue: #7FC5FF;
+$button-inner-hover-orange: #FFAB8C;
+$antd-hover-blue: #4096FF;
+$button-text-light: ai.$white;
+$button-text-dark: hsl(0, 0%, 16%);
+
+// Shadow colors for hero variant
+$shadow-blue-idle: rgba(68, 163, 255, 0.25);
+$shadow-orange-idle: rgba(255, 134, 87, 0.25);
+$shadow-blue-hover: rgba(110, 184, 255, 0.35);
+$shadow-orange-hover: rgba(255, 158, 120, 0.35);
 
 // ============================================
 // Base AIButton Styles
@@ -18,11 +37,12 @@ $hover-angle: ai.$gradient-hover-angle;
   @include ai.transitionAll;
 
   // CSS custom properties for dynamic styling
-  --ai-button-angle: #{$default-angle};
-  --ai-border-width: 1px;     // Adjustable border thickness
-  --ai-border-radius: var(--ant-border-radius, 6px);
+  --ai-button-angle: #{$default-angle};  // Used for gradient rotation animation, hero variant only
 
-  // State modifiers using consistent filter mixins
+  // Common button properties
+  box-sizing: border-box;
+  color: $button-text-dark;
+
   &--idle {
     @include ai.filter-idle;
   }
@@ -30,57 +50,61 @@ $hover-angle: ai.$gradient-hover-angle;
   &--hovered {
     @include ai.filter-hover;
   }
-}
 
-// ============================================
-// Icon Wrapper for Dual-Icon Transition
-// ============================================
+  &:global(.ant-btn) {
+    &::before {
+      display: none;
+    }
 
-.iconWrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1em;
-  height: 1em;
+    border-radius: var(--ai-border-radius, 6px);
+    border-color: transparent !important;
+    padding-inline: max(0px, calc(var(--ai-padding-inline, 15px) - var(--ai-border-width, 1px)));
+    padding-block: max(0px, calc(var(--ai-padding-block, 4px) - var(--ai-border-width, 1px)));
+    height: calc(var(--ai-button-height, 32px) - (var(--ai-border-width, 1px) * 2)) !important;
 
-  // Position both icons in the same space
-  .iconBlack,
-  .iconColor {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
+    &:hover,
+    &:focus-visible {
+      border-color: transparent !important;
+      outline: none;
+    }
   }
 
-  // Default state: show black, hide color
-  .iconBlack {
-    opacity: 1;
+  &:global(.ant-btn-sm) {
+    padding-inline: max(0px, calc(var(--ai-padding-inline, 7px) - var(--ai-border-width, 1px)));
+    padding-block: max(0px, calc(var(--ai-padding-block, 2px) - var(--ai-border-width, 1px)));
+    height: calc(var(--ai-button-height, 24px) - (var(--ai-border-width, 1px) * 2));
   }
 
-  .iconColor {
-    opacity: 0;
-  }
-}
-
-// Hover state for outline button: hide black, show color
-.aiButton--outline.aiButton--hovered {
-  .iconBlack {
-    opacity: 0;
-  }
-
-  .iconColor {
-    opacity: 1;
+  &:global(.ant-btn-lg) {
+    padding-inline: max(0px, calc(var(--ai-padding-inline, 19px) - var(--ai-border-width, 1px)));
+    padding-block: max(0px, calc(var(--ai-padding-block, 7px) - var(--ai-border-width, 1px)));
+    height: calc(var(--ai-button-height, 40px) - (var(--ai-border-width, 1px) * 2));
   }
 }
 
 // ============================================
-// OUTLINE Variant
+// Icon Styling for Color Inheritance
 // ============================================
 
-// Wrapper for gradient border
-.aiButtonWrapper--outline {
+.sparkleIcon {
+  // Match the working Ant Design button icon styles
+  display: block !important;
+  line-height: inherit !important;  // Inherit line-height from button for proper centering
+  transition: color 0.1s ease-out;
+}
+
+// ============================================
+// Base Wrapper Styles (shared by all variants)
+// ============================================
+// Note: Each variant defines its own wrapper styles with direct backgrounds
+// No shared wrapper needed - the padding-based border trick is variant-specific
+
+// ============================================
+// HERO-OUTLINE Variant
+// ============================================
+
+// Wrapper for gradient border (only variant-specific styles)
+.aiButtonWrapper--hero-outline {
   position: relative;
   display: inline-flex;
   align-items: stretch;
@@ -99,25 +123,22 @@ $hover-angle: ai.$gradient-hover-angle;
   }
 }
 
-// Inner button for outline variant
-.aiButton--outline {
-  --ai-border-width: 1px;
-
+// Inner button for hero-outline variant
+.aiButton--hero-outline {
   background: ai.$white !important;
-  box-shadow: none !important;
   background-clip: padding-box;
   border-radius: var(--ai-border-radius, 6px);
-  border: var(--ai-border-width, 1px) solid transparent;
   box-sizing: border-box;
-  @include ai.transitionAll;
+  position: relative;
+  z-index: 1;
 
   &.aiButton--idle {
-    color: ai.$button-text-dark !important;
+    color: $button-text-dark !important;  // Black icon and text in idle state
   }
 
-  // &.aiButton--hovered {
-  //   color: ai.$primary-blue !important;
-  // }
+  &.aiButton--hovered {
+    color: $antd-hover-blue !important;  // Match Ant Design hover blue
+  }
 }
 
 
@@ -125,7 +146,7 @@ $hover-angle: ai.$gradient-hover-angle;
 // HERO Variant
 // ============================================
 
-// Wrapper with animated gradient and drop shadows
+// Wrapper with animated gradient and drop shadows (only variant-specific styles)
 .aiButtonWrapper--hero {
   position: relative;
   display: inline-flex;
@@ -134,15 +155,15 @@ $hover-angle: ai.$gradient-hover-angle;
   border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));
   background: ai.ai-gradient-stops(
     var(--ai-button-angle, #{$default-angle}),
-    ai.$button-border-idle-blue,
-    ai.$button-border-idle-orange
+    $button-border-idle-blue,
+    $button-border-idle-orange
   );
   margin: calc(var(--ai-border-width, 1px) * -1);
   @include ai.transitionAll;
 
   &.aiButtonWrapper--idle {
-    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-idle)
-            drop-shadow(3px 3px 6px ai.$shadow-orange-idle);
+    filter: drop-shadow(3px 3px 6px $shadow-blue-idle)
+            drop-shadow(3px 3px 6px $shadow-orange-idle);
   }
 
   &.aiButtonWrapper--hovered {
@@ -151,21 +172,17 @@ $hover-angle: ai.$gradient-hover-angle;
       ai.$primary-blue,
       ai.$primary-orange
     );
-    filter: drop-shadow(3px 3px 6px ai.$shadow-blue-hover)
-            drop-shadow(3px 3px 6px ai.$shadow-orange-hover);
+    filter: drop-shadow(3px 3px 6px $shadow-blue-hover)
+            drop-shadow(3px 3px 6px $shadow-orange-hover);
   }
 }
 
 // Inner button for hero variant
 .aiButton--hero {
-  --ai-border-width: 1px;
-
-  box-shadow: none !important;
-  color: ai.$button-text-light !important;
+  color: $button-text-light !important;
   position: relative;
   z-index: 1;
   border-radius: var(--ai-border-radius, 6px);
-  border: var(--ai-border-width, 1px) solid transparent;
   box-sizing: border-box;
 
   &.aiButton--idle {
@@ -179,10 +196,20 @@ $hover-angle: ai.$gradient-hover-angle;
   &.aiButton--hovered {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),
-      ai.$button-inner-hover-blue,
-      ai.$button-inner-hover-orange
+      $button-inner-hover-blue,
+      $button-inner-hover-orange
     ) !important;
   }
+}
+
+// ============================================
+// Shared Variant Styles
+// ============================================
+
+// Both variants need to override Ant's box-shadow
+.aiButton--hero,
+.aiButton--hero-outline {
+  box-shadow: none !important;
 }
 
 // ============================================
@@ -191,56 +218,35 @@ $hover-angle: ai.$gradient-hover-angle;
 
 // Use :where() to reduce specificity where possible,
 // only use !important when absolutely necessary
-.aiButton {
-  &.ant-btn {
-    // Remove Ant Design's default transitions that conflict
-    &::before {
-      display: none;
+.aiButton--hero {
+  &:global(.ant-btn-primary) {
+    color: $button-text-light !important;
+  }
+}
+
+// Hero-outline variant specific overrides
+.aiButton--hero-outline {
+  &:global(.ant-btn-default) {
+    border-color: transparent !important;
+
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      background: ai.$white !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+      outline: none;
     }
-
-    border-radius: var(--ai-border-radius, 6px);
-
-    // Ensure hover states don't add unwanted styles
-    border-color: transparent;
-
-    padding-inline: max(0px, calc(15px - var(--ai-border-width, 1px)));
-    padding-block: max(0px, calc(4px - var(--ai-border-width, 1px)));
-    height: calc(32px - (var(--ai-border-width, 1px) * 2))!important;
   }
 }
 
-// Hero variant specific overrides
-.aiButton--hero.ant-btn-primary {
-  color: ai.$button-text-light !important;
-  border-color: transparent !important;
-
-  &:hover,
-  &:focus {
-    // color: ai.$button-text-light !important;
-    border-color: transparent !important;
+.aiButton {
+  &:global(.ant-btn-sm) {
+    line-height: 1;
   }
-}
 
-// Outline variant specific overrides
-.aiButton--outline.ant-btn-default {
-  border-color: transparent !important;
-  background-clip: padding-box;
-
-  &:hover,
-  &:focus {
-    border-color: transparent !important;
-    background: ai.$white !important;
+  &:global(.ant-btn-lg) {
+    line-height: 1;
   }
-}
-
-.aiButton.ant-btn-sm {
-  padding-inline: max(0px, calc(7px - var(--ai-border-width, 1px)));
-  padding-block: max(0px, calc(2px - var(--ai-border-width, 1px)));
-  height: calc(24px - (var(--ai-border-width, 1px) * 2));
-}
-
-.aiButton.ant-btn-lg {
-  padding-inline: max(0px, calc(19px - var(--ai-border-width, 1px)));
-  padding-block: max(0px, calc(7px - var(--ai-border-width, 1px)));
-  height: calc(40px - (var(--ai-border-width, 1px) * 2));
 }

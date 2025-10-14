@@ -6,14 +6,16 @@ import styles from "./AISparkleIcon.module.scss";
 
 interface AISparkleIconProps {
   className?: string;
-  variant?: "color" | "black" | "disabled" | "circle" | "badge" | "inline";
-  size?: number; // default 24px; only used for color/black/disabled/inline variants (circle/badge use fixed SCSS sizes)
+  variant?: "color" | "black" | "white" | "disabled" | "circle" | "badge" | "inline" | "custom";
+  size?: number; // default 24px; only used for color/black/white/disabled/inline/custom variants (circle/badge use fixed SCSS sizes)
   showLabel?: boolean; // for badge variant
+  customColor?: string; // Custom color to use when variant is "custom"
+  customStrokeColor?: string; // Custom stroke color (optional, defaults to customColor)
 }
 
 /**
  * Main AI Sparkle Icon component
- * Supports 3 core variants (color, black, disabled) + 3 special variants (circle, badge, inline)
+ * Supports 4 core variants (color, black, white, disabled) + 3 special variants (circle, badge, inline)
  *
  * Sizing behavior:
  * - color/black/disabled: Controlled by `size` prop (default 24px)
@@ -46,7 +48,9 @@ const AISparkleIcon = ({
   className,
   variant = "color",
   size = 24,
-  showLabel = true
+  showLabel = true,
+  customColor,
+  customStrokeColor
 }: AISparkleIconProps) => {
   // Special variants with their own components
   if (variant === "circle") {
@@ -65,11 +69,25 @@ const AISparkleIcon = ({
     );
   }
 
-  // Standard variants (color, black, disabled)
+  // Custom variant with color support
+  if (variant === "custom") {
+    return (
+      <div className={className}>
+        <SparkleIconSVG
+          variant="custom"
+          customColor={customColor}
+          customStrokeColor={customStrokeColor}
+          size={size}
+        />
+      </div>
+    );
+  }
+
+  // Standard variants (color, black, white, disabled)
   return (
     <div className={className}>
       <SparkleIconSVG
-        variant={variant as "color" | "black" | "disabled"}
+        variant={variant as "color" | "black" | "white" | "disabled"}
         size={size}
       />
     </div>

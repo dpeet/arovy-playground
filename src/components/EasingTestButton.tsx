@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, type ReactNode, type CSSProperties } from "react";
+import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
-import { easeOutExpo } from "@/lib/easing";
+import type { EasingFunction } from "@/lib/easing";
 import SparkleIconSVG from "./SparkleIconSVG";
 import styles from "./AIButton.module.scss";
 
@@ -36,15 +36,20 @@ const paddingBlockBySize = {
   large: "7px",
 } as const;
 
-interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
-  variant: "hero-outline" | "hero";
-  children?: ReactNode;
-  type?: ButtonProps["type"]; // Re-add type as optional to avoid TS errors
+interface EasingTestButtonProps extends Omit<ButtonProps, 'type'> {
+  easingFunction: EasingFunction;
+  easingLabel: string;
+  children?: string;
 }
 
-const AIButton = (props: AIButtonProps) => {
+/**
+ * Test button component for comparing different easing functions
+ * Identical to AIButton hero variant but with customizable easing
+ */
+const EasingTestButton = (props: EasingTestButtonProps) => {
   const {
-    variant,
+    easingFunction,
+    easingLabel,
     className,
     children = "Summarize",
     onClick,
@@ -67,19 +72,11 @@ const AIButton = (props: AIButtonProps) => {
   const animationRef = useRef<number | null>(null);
   const angleRef = useRef(gradientAngle);
 
-  // Only hero variant uses gradient animation
-  const animateGradient = variant === "hero";
-
   useEffect(() => {
     angleRef.current = gradientAngle;
   }, [gradientAngle]);
 
   useEffect(() => {
-    if (!animateGradient) {
-      setGradientAngle(135);
-      return;
-    }
-
     const startAngle = angleRef.current;
     const targetAngle = isHovered ? 315 : 135;
     const startTime = Date.now();
@@ -88,7 +85,7 @@ const AIButton = (props: AIButtonProps) => {
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = easeOutExpo(progress);
+      const easeProgress = easingFunction(progress);
 
       const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
       setGradientAngle(currentAngle);
@@ -105,9 +102,8 @@ const AIButton = (props: AIButtonProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [animateGradient, isHovered]);
+  }, [easingFunction, isHovered]);
 
-  // Compose hover handlers to preserve both internal state and user callbacks
   const handleMouseEnter: ButtonProps["onMouseEnter"] = (event) => {
     setIsHovered(true);
     userMouseEnter?.(event);
@@ -118,11 +114,9 @@ const AIButton = (props: AIButtonProps) => {
     userMouseLeave?.(event);
   };
 
-  // Helper to generate state classes
   const getStateClass = () => isHovered ? styles["aiButton--hovered"] : styles["aiButton--idle"];
   const getWrapperStateClass = () => isHovered ? styles["aiButtonWrapper--hovered"] : styles["aiButtonWrapper--idle"];
 
-  // Shared CSS variables keep wrapper/button sizing and gradients in sync
   const sharedStyle = {
     '--ai-border-width': resolvedBorderWidth,
     '--ai-border-radius': resolvedBorderRadius,
@@ -132,85 +126,46 @@ const AIButton = (props: AIButtonProps) => {
     '--ai-button-angle': `${gradientAngle}deg`,
   } as CSSProperties;
 
-  // Render different variants
-  switch (variant) {
-    case "hero-outline":
-      return (
-        <div
+  return (
+    <div>
+      <div
+        className={cn(
+          styles.aiButtonWrapper,
+          styles["aiButtonWrapper--hero"],
+          getWrapperStateClass(),
+          className
+        )}
+        style={sharedStyle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Button
+          type="primary"
+          icon={
+            <SparkleIconSVG
+              variant="white"
+              size={iconSize}
+              className={styles.sparkleIcon}
+            />
+          }
           className={cn(
-            styles.aiButtonWrapper,
-            styles["aiButtonWrapper--hero-outline"],
-            getWrapperStateClass(),
-            className
+            styles.aiButton,
+            styles["aiButton--hero"],
+            getStateClass()
           )}
           style={sharedStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onClick={onClick}
+          size={buttonSize}
+          {...restProps}
         >
-          <Button
-            type="default"
-            icon={
-              <SparkleIconSVG
-                variant="custom"
-                size={iconSize}
-                className={styles.sparkleIcon} // Required for SCSS icon color transitions
-              />
-            }
-            className={cn(
-              styles.aiButton,
-              styles["aiButton--hero-outline"],
-              getStateClass()
-            )}
-            style={sharedStyle}
-            onClick={onClick}
-            size={buttonSize}
-            {...restProps}
-          >
-            {children}
-          </Button>
-        </div>
-      );
-
-    case "hero":
-      return (
-        <div
-          className={cn(
-            styles.aiButtonWrapper,
-            styles["aiButtonWrapper--hero"],
-            getWrapperStateClass(),
-            className
-          )}
-          style={sharedStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <Button
-            type="primary"
-            icon={
-              <SparkleIconSVG
-                variant="white"
-                size={iconSize}
-                className={styles.sparkleIcon} // Required for SCSS icon color transitions
-              />
-            }
-            className={cn(
-              styles.aiButton,
-              styles["aiButton--hero"],
-              getStateClass()
-            )}
-            style={sharedStyle}
-            onClick={onClick}
-            size={buttonSize}
-            {...restProps}
-          >
-            {children}
-          </Button>
-        </div>
-      );
-
-    default:
-      return null;
-  }
+          {children}
+        </Button>
+      </div>
+      <div className="text-xs text-center mt-2 font-medium text-gray-700">
+        {easingLabel}
+      </div>
+    </div>
+  );
 };
 
-export default AIButton;
+export default EasingTestButton;

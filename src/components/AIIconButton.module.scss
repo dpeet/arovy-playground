@@ -17,7 +17,7 @@
   border: 1px solid transparent;
   padding: 4px;
   position: relative;
-  @include ai.transitionAll;
+  transition: background-color 0.3s ease;
 
   // Icon wrapper for dual-icon transition technique
   .iconWrapper {

@@ -1,0 +1,21 @@
+// Import shared AI component variables with namespace
+@use '@/styles/ai-variables' as ai;
+
+// Styles for Ant Design default button to make sparkle icon change color on hover
+.antDefaultButton {
+  transition: color 0.3s ease;
+
+  // Icon inherits button color
+  svg {
+    color: currentColor;
+    transition: color 0.3s ease;
+  }
+
+  &:hover:not(:disabled) {
+    color: ai.$primary-blue; // Primary blue on hover
+  }
+
+  &:focus:not(:disabled) {
+    color: ai.$primary-blue; // Primary blue on focus
+  }
+}

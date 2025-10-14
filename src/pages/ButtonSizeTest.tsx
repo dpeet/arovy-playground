@@ -1,7 +1,18 @@
-import { Button } from "antd";
 import { useEffect, useRef, useState } from "react";
-import AISparkleIcon from "@/components/AISparkleIcon";
+
 import AIButton from "@/components/AIButton";
+import AISparkleIcon from "@/components/AISparkleIcon";
+import EasingTestButton from "@/components/EasingTestButton";
+import { Button } from "antd";
+import {
+  easeOutQuad,
+  easeOutCubic,
+  easeOutQuart,
+  easeOutExpo,
+  easeOutCirc,
+  easeOutBack,
+} from "@/lib/easing";
+import styles from "./ButtonSizeTest.module.scss";
 
 interface ButtonMeasurement {
   variant: TestVariant;
@@ -9,11 +20,11 @@ interface ButtonMeasurement {
   height: number;
 }
 
-const AI_VARIANTS = ["outline", "hero"] as const;
+const AI_VARIANTS = ["hero-outline", "hero"] as const;
 type AiVariant = typeof AI_VARIANTS[number];
 type TestVariant = AiVariant | "antd-default" | "antd-primary";
 const TEST_VARIANTS = [...AI_VARIANTS, "antd-default", "antd-primary"] as const;
-const MEASUREMENT_ORDER: TestVariant[] = ["antd-default", "outline", "hero", "antd-primary"];
+const MEASUREMENT_ORDER: TestVariant[] = ["antd-default", "hero-outline", "hero", "antd-primary"];
 
 const isAiVariant = (variant: TestVariant): variant is AiVariant => variant !== "antd-default" && variant !== "antd-primary";
 
@@ -22,18 +33,17 @@ const ButtonSizeTest = () => {
   const wrappersRef = useRef<Map<TestVariant, HTMLDivElement>>(new Map());
 
   useEffect(() => {
-    // Measure all buttons after render
+    // Delay measurement so AntD layout and gradient wrappers settle before sampling sizes
     const timer = window.setTimeout(() => {
       const newMeasurements: ButtonMeasurement[] = [];
 
       TEST_VARIANTS.forEach(variant => {
         const wrapper = wrappersRef.current.get(variant);
         if (wrapper) {
-          // For AI variants, measure the inner aiButtonWrapper div (with gradient border)
-          // For Ant variants, measure the wrapper directly
+          // AI variants wrap the button in a gradient shell—measure that inner shell instead of the outer wrapper
+          // Ant Design variants have no extra wrapper, so measure the button container directly
           let elementToMeasure = wrapper;
           if (isAiVariant(variant)) {
-            // Find the first child div which is the aiButtonWrapper
             const aiWrapper = wrapper.querySelector('div[class*="aiButtonWrapper"]');
             if (aiWrapper) {
               elementToMeasure = aiWrapper as HTMLDivElement;
@@ -85,14 +95,14 @@ const ButtonSizeTest = () => {
               ) : variant === "antd-primary" ? (
                 <Button
                   type="primary"
-                  icon={<AISparkleIcon variant="color" size={20} />}
+                  icon={<AISparkleIcon variant="white" size={20} />}
                 >
                   Summarize
                 </Button>
               ) : (
                 <Button
                   type="default"
-                  icon={<AISparkleIcon variant="color" size={20} />}
+                  icon={<AISparkleIcon variant="custom" />}
                 >
                   Summarize
                 </Button>
@@ -111,7 +121,7 @@ const ButtonSizeTest = () => {
           <div key={size} className="mb-4">
             <h3 className="text-sm font-medium mb-2 text-gray-600">Size: {size}</h3>
             <div className="flex gap-4 items-center">
-              <AIButton variant="outline" size={size}>
+              <AIButton variant="hero-outline" size={size}>
                 Summarize
               </AIButton>
               <AIButton variant="hero" size={size}>
@@ -120,20 +130,116 @@ const ButtonSizeTest = () => {
               <Button
                 type="default"
                 size={size}
-                icon={<AISparkleIcon variant="color" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
+                className={styles.antDefaultButton}
+                icon={<AISparkleIcon variant="custom" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
               >
                 Summarize
               </Button>
               <Button
                 type="primary"
                 size={size}
-                icon={<AISparkleIcon variant="color" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
+                icon={<AISparkleIcon variant="white" size={size === 'small' ? 14 : size === 'large' ? 24 : 20} />}
               >
                 Summarize
               </Button>
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <h2 className="text-lg font-semibold mb-4">Easing Function Comparison</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          Hover over each button to see how different easing functions affect the gradient rotation animation.
+          All animations run for 300ms.
+        </p>
+        <div className="flex gap-6 items-start flex-wrap">
+          <div className="flex flex-col items-center">
+            <EasingTestButton
+              easingFunction={easeOutQuad}
+              easingLabel="easeOutQuad"
+            >
+              Summarize
+            </EasingTestButton>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Gentle, linear slowdown
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <EasingTestButton
+              easingFunction={easeOutCubic}
+              easingLabel="easeOutCubic"
+            >
+              Summarize
+            </EasingTestButton>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Moderate, balanced
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <EasingTestButton
+              easingFunction={easeOutQuart}
+              easingLabel="easeOutQuart"
+            >
+              Summarize
+            </EasingTestButton>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Strong, snappy
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <EasingTestButton
+                easingFunction={easeOutExpo}
+                easingLabel="easeOutExpo"
+              >
+                Summarize
+              </EasingTestButton>
+              <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                ACTIVE
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Very aggressive, dramatic
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <EasingTestButton
+              easingFunction={easeOutCirc}
+              easingLabel="easeOutCirc"
+            >
+              Summarize
+            </EasingTestButton>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Smooth, arc-like
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <EasingTestButton
+              easingFunction={easeOutBack}
+              easingLabel="easeOutBack"
+            >
+              Summarize
+            </EasingTestButton>
+            <div className="text-xs text-gray-500 mt-1 max-w-[140px] text-center">
+              Playful overshoot
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 rounded-lg bg-blue-50 text-sm">
+          <h3 className="font-semibold mb-2">Current Implementation</h3>
+          <p className="text-gray-700">
+            The AIButton component currently uses <code className="bg-blue-100 px-1 py-0.5 rounded">easeOutExpo</code> for gradient rotation.
+            This creates a dramatic, high-energy feel with very aggressive deceleration.
+            Hover over each button above to compare and find your preferred animation curve.
+          </p>
+        </div>
       </div>
 
       <div className="bg-white border rounded-lg p-6">

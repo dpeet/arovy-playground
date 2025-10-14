@@ -20,10 +20,8 @@ $soft-blue: #C8E4FF;         // Light blue - softer, more pastel
 $soft-orange: #FFBFA6;       // Light peach - softer, more pastel
 
 // UI colors
-$text-dark: hsl(0, 0%, 16%); // Dark text color
-$disabled-grey: #949494;     // Disabled state color
-$white: white;
-$black: #000000;
+$disabled-grey: #949494;     // Disabled state color (used in SparkleIconSVG)
+$white: white;                // Used in AIButton for background
 
 // ============================================
 // Gradient Angles
@@ -34,36 +32,8 @@ $gradient-soft-angle: 90deg;      // Soft gradient angle (horizontal)
 $gradient-hover-angle: 315deg;    // Animated gradient hover target
 
 // ============================================
-// Button-Specific Colors
-// (Unique variations for button states)
-// ============================================
-
-// Border colors for idle state (darker than primary)
-$button-border-idle-blue: #5AA8E8;
-$button-border-idle-orange: #E88A6D;
-
-// Inner button hover colors (lighter than primary)
-$button-inner-hover-blue: #7FC5FF;
-$button-inner-hover-orange: #FFAB8C;
-
-// Drop shadow colors for combined variant
-$shadow-blue-idle: rgba(68, 163, 255, 0.25);
-$shadow-orange-idle: rgba(255, 134, 87, 0.25);
-$shadow-blue-hover: rgba(110, 184, 255, 0.35);
-$shadow-orange-hover: rgba(255, 158, 120, 0.35);
-
-// ============================================
 // Gradient Mixins
 // ============================================
-
-// Primary gradient (vibrant, diagonal)
-@mixin gradient-primary($angle: $gradient-primary-angle) {
-  background: linear-gradient(
-    $angle,
-    $primary-blue 0%,
-    $primary-orange 100%
-  );
-}
 
 // Soft gradient (pastel, horizontal)
 @mixin gradient-soft($angle: $gradient-soft-angle) {
@@ -73,16 +43,6 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
     $soft-orange 100%
   );
 }
-
-// ============================================
-// Semantic Color Aliases
-// (More descriptive names for common use cases)
-// ============================================
-
-$gradient-start: $primary-blue;
-$gradient-end: $primary-orange;
-$button-text-light: $white;
-$button-text-dark: $text-dark;
 
 // ============================================
 // Gradient Functions

@@ -7,7 +7,7 @@ This guide documents the implementation of the **Combined Gradient Button** - a 
 ## Table of Contents
 
 1. [Combined Gradient Button](#combined-gradient-button)
-2. [Outline Button (Secondary)](#outline-button-secondary)
+2. [Hero-Outline Button (Secondary)](#hero-outline-button-secondary)
 3. [Shared Dependencies](#shared-dependencies)
 4. [Usage Examples](#usage-examples)
 5. [Technical Details](#technical-details)
@@ -154,9 +154,9 @@ const style = {
 
 ---
 
-## Outline Button (Secondary)
+## Hero-Outline Button (Secondary)
 
-The outline variant is for secondary AI actions:
+The hero-outline variant is for secondary AI actions:
 - Static gradient border (no rotation)
 - Subtle gradient colors (30% intensity)
 - White background
@@ -166,7 +166,7 @@ The outline variant is for secondary AI actions:
 
 ```scss
 // Wrapper with gradient border
-.aiButtonWrapper--outline {
+.aiButtonWrapper--hero-outline {
   display: inline-block;
   padding: var(--ai-border-width, 1px);
   border-radius: 0.375rem;
@@ -189,7 +189,7 @@ The outline variant is for secondary AI actions:
 }
 
 // Inner button
-.aiButton--outline {
+.aiButton--hero-outline {
   --ai-gradient-intensity: 0.3;
   --ai-border-width: 1px;
 
@@ -239,15 +239,6 @@ $white: white;
   outline: none;
   cursor: pointer;
 }
-
-@mixin transitionAll($duration: 0.3s) {
-  transition: all $duration ease;
-}
-
-@mixin boxShadowLg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
 ```
 
 ### Base Button Styles
@@ -257,7 +248,7 @@ $white: white;
 
 .aiButton {
   @include buttonReset;
-  @include transitionAll;
+  transition: color 0.3s ease;
 
   color: $text-dark;
 
@@ -285,7 +276,7 @@ $white: white;
 
 ```tsx
 interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
-  variant: "combined" | "outline";
+  variant: "hero" | "hero-outline";
   children?: ReactNode;
   gradientIntensity?: number; // 0-1, controls gradient vibrancy
   borderWidth?: string; // CSS value like "1px", "2px"
@@ -309,7 +300,7 @@ import { toast } from "sonner";
 
 // Secondary AI button
 <AIButton
-  variant="outline"
+  variant="hero-outline"
   onClick={() => toast.success("Secondary action!")}
 >
   Generate Report
@@ -394,7 +385,7 @@ When implementing these buttons:
 
 - [ ] Import `AIButton` component
 - [ ] Use `variant="combined"` for primary AI actions
-- [ ] Use `variant="outline"` for secondary AI actions
+- [ ] Use `variant="hero-outline"` for secondary AI actions
 - [ ] Add `AISparkleIcon` (automatically included in button)
 - [ ] Test hover states in browser
 - [ ] Verify animation smoothness (60fps)

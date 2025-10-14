@@ -52,7 +52,7 @@ src/
 
 ### Key Components
 - `AISparkleIcon`: Core sparkle with 6 variants (color, black, disabled, circle, badge, inline)
-- `AIButton`: Full AI action buttons with 2 variants (hero/outline) and shared gradient styling
+- `AIButton`: Full AI action buttons with 2 variants (hero/hero-outline) and shared gradient styling
 
 ### Routes
 - `/` - AI component showcase (comprehensive gallery)
@@ -121,7 +121,7 @@ npm run dev
 </AIButton>
 
 // Secondary AI button
-<AIButton variant="outline">
+<AIButton variant="hero-outline">
   Generate Report
 </AIButton>
 

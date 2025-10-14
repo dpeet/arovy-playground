@@ -16,7 +16,7 @@ const BUTTON_VARIANTS = [
     description: "Hero AI button with rotating gradient background, animated border, and glow effect",
   },
   {
-    variant: "outline",
+    variant: "hero-outline",
     title: "Secondary AI Button",
     description: "Gradient border with color transition on hover for secondary actions",
   },
