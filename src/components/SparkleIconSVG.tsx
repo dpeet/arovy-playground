@@ -3,7 +3,7 @@ import React from "react";
 interface SparkleIconSVGProps {
   className?: string;
   size?: number;
-  variant?: "color" | "black" | "disabled";
+  variant?: "color" | "black" | "white" | "disabled";
   disableInlineSize?: boolean; // When true, omit inline size styles (let CSS control sizing)
 }
 
@@ -29,6 +29,8 @@ const SparkleIconSVG = ({
     switch (variant) {
       case "black":
         return "#000000";
+      case "white":
+        return "#FFFFFF";
       case "disabled":
         return "#949494";
       case "color":

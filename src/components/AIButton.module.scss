@@ -17,8 +17,6 @@ $hover-angle: ai.$gradient-hover-angle;
   @include ai.buttonReset;
   @include ai.transitionAll;
 
-  color: ai.$button-text-dark;
-
   // CSS custom properties for dynamic styling
   --ai-button-angle: #{$default-angle};
   --ai-border-width: 1px;     // Adjustable border thickness
@@ -31,6 +29,49 @@ $hover-angle: ai.$gradient-hover-angle;
 
   &--hovered {
     @include ai.filter-hover;
+  }
+}
+
+// ============================================
+// Icon Wrapper for Dual-Icon Transition
+// ============================================
+
+.iconWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+
+  // Position both icons in the same space
+  .iconBlack,
+  .iconColor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+
+  // Default state: show black, hide color
+  .iconBlack {
+    opacity: 1;
+  }
+
+  .iconColor {
+    opacity: 0;
+  }
+}
+
+// Hover state for outline button: hide black, show color
+.aiButton--outline.aiButton--hovered {
+  .iconBlack {
+    opacity: 0;
+  }
+
+  .iconColor {
+    opacity: 1;
   }
 }
 
@@ -74,28 +115,18 @@ $hover-angle: ai.$gradient-hover-angle;
     color: ai.$button-text-dark !important;
   }
 
-  &.aiButton--hovered {
-    color: ai.$primary-blue !important;
-  }
+  // &.aiButton--hovered {
+  //   color: ai.$primary-blue !important;
+  // }
 }
 
-// Outline icon transitions - simplified selectors
-.aiButton--idle .aiButton__icon--outline {
-  fill: ai.$button-text-dark;
-  transition: fill 300ms ease;
-}
-
-.aiButton--hovered .aiButton__icon--outline {
-  fill: ai.$primary-blue;
-  transition: fill 300ms ease;
-}
 
 // ============================================
-// COMBINED Variant
+// HERO Variant
 // ============================================
 
 // Wrapper with animated gradient and drop shadows
-.aiButtonWrapper--combined {
+.aiButtonWrapper--hero {
   position: relative;
   display: inline-flex;
   align-items: stretch;
@@ -125,8 +156,8 @@ $hover-angle: ai.$gradient-hover-angle;
   }
 }
 
-// Inner button for combined variant
-.aiButton--combined {
+// Inner button for hero variant
+.aiButton--hero {
   --ai-border-width: 1px;
 
   box-shadow: none !important;
@@ -178,14 +209,14 @@ $hover-angle: ai.$gradient-hover-angle;
   }
 }
 
-// Combined variant specific overrides
-.aiButton--combined.ant-btn-primary {
+// Hero variant specific overrides
+.aiButton--hero.ant-btn-primary {
   color: ai.$button-text-light !important;
   border-color: transparent !important;
 
   &:hover,
   &:focus {
-    color: ai.$button-text-light !important;
+    // color: ai.$button-text-light !important;
     border-color: transparent !important;
   }
 }

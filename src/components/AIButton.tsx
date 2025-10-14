@@ -2,11 +2,11 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
-import AISparkleIcon from "./AISparkleIcon";
+import SparkleIconSVG from "./SparkleIconSVG";
 import styles from "./AIButton.module.scss";
 
 interface AIButtonProps extends Omit<ButtonProps, 'type' | 'variant'> {
-  variant: "outline" | "combined";
+  variant: "outline" | "hero";
   children?: ReactNode;
   type?: ButtonProps["type"]; // Re-add type as optional to avoid TS errors
   borderWidth?: string; // CSS value like "1px", "2px", etc.
@@ -38,7 +38,7 @@ const AIButton = (props: AIButtonProps) => {
   };
 
   const borderWidthBySize: Record<NonNullable<ButtonProps["size"]>, string> =
-    variant === "combined"
+    variant === "hero"
       ? { small: "1px", middle: "1px", large: "1px" }
       : { small: "1px", middle: "1px", large: "1px" };
 
@@ -70,8 +70,8 @@ const AIButton = (props: AIButtonProps) => {
   const animationRef = useRef<number | null>(null);
   const angleRef = useRef(gradientAngle);
 
-  // Only combined variant uses gradient animation
-  const animateGradient = variant === "combined";
+  // Only hero variant uses gradient animation
+  const animateGradient = variant === "hero";
 
   useEffect(() => {
     angleRef.current = gradientAngle;
@@ -126,7 +126,7 @@ const AIButton = (props: AIButtonProps) => {
   const getStateClass = () => isHovered ? styles["aiButton--hovered"] : styles["aiButton--idle"];
   const getWrapperStateClass = () => isHovered ? styles["aiButtonWrapper--hovered"] : styles["aiButtonWrapper--idle"];
 
-  // Style object for gradient angle (only used by rotate and combined variants)
+  // Style object for gradient angle (only used by rotate and hero variants)
   const angleStyle = animateGradient ? { '--ai-button-angle': `${gradientAngle}deg` } as React.CSSProperties : undefined;
 
   // Create style object with CSS variables for border width and radius
@@ -157,11 +157,20 @@ const AIButton = (props: AIButtonProps) => {
           <Button
             type="default"
             icon={
-              <AISparkleIcon
-                variant="color"
-                size={iconSize}
-                className={styles["aiButton__icon--outline"]}
-              />
+              <div className={styles.iconWrapper}>
+                {/* Black version (default state) */}
+                <SparkleIconSVG
+                  variant="black"
+                  size={iconSize}
+                  className={styles.iconBlack}
+                />
+                {/* Color version (hover state) */}
+                <SparkleIconSVG
+                  variant="color"
+                  size={iconSize}
+                  className={styles.iconColor}
+                />
+              </div>
             }
             className={cn(
               styles.aiButton,
@@ -178,11 +187,11 @@ const AIButton = (props: AIButtonProps) => {
         </div>
       );
 
-    case "combined":
+    case "hero":
       return (
         <div
           className={cn(
-            styles["aiButtonWrapper--combined"],
+            styles["aiButtonWrapper--hero"],
             getWrapperStateClass(),
             className
           )}
@@ -192,10 +201,10 @@ const AIButton = (props: AIButtonProps) => {
         >
           <Button
             type="primary"
-            icon={<AISparkleIcon variant="black" size={iconSize} />}
+            icon={<SparkleIconSVG variant="white" size={iconSize} />}
             className={cn(
               styles.aiButton,
-              styles["aiButton--combined"],
+              styles["aiButton--hero"],
               getStateClass()
             )}
             style={buttonStyle}

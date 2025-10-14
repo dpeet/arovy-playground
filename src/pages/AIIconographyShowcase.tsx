@@ -11,7 +11,7 @@ const { Title, Text, Paragraph } = Typography;
 // Button variants for the hero showcase
 const BUTTON_VARIANTS = [
   {
-    variant: "combined",
+    variant: "hero",
     title: "AI Action Button",
     description: "Hero AI button with rotating gradient background, animated border, and glow effect",
   },
@@ -120,7 +120,7 @@ const AIIconographyShowcase = () => {
       {/* Hero Button Showcase */}
       <Card title="AI Button Variants" style={{ marginBottom: 24 }}>
         <Paragraph>
-          Two core AI button designs: the hero "Combined" button for primary AI actions, and the "Outline" button for secondary actions.
+          Two core AI button designs: the "Hero" button for primary AI actions, and the "Outline" button for secondary actions.
         </Paragraph>
         <Space direction="vertical" size="large" style={{ width: "100%", marginTop: 32 }}>
           {BUTTON_VARIANTS.map(({ variant, title, description }) => (

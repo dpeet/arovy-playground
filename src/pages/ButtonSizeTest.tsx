@@ -9,11 +9,11 @@ interface ButtonMeasurement {
   height: number;
 }
 
-const AI_VARIANTS = ["outline", "combined"] as const;
+const AI_VARIANTS = ["outline", "hero"] as const;
 type AiVariant = typeof AI_VARIANTS[number];
 type TestVariant = AiVariant | "antd-default" | "antd-primary";
 const TEST_VARIANTS = [...AI_VARIANTS, "antd-default", "antd-primary"] as const;
-const MEASUREMENT_ORDER: TestVariant[] = ["antd-default", "outline", "combined", "antd-primary"];
+const MEASUREMENT_ORDER: TestVariant[] = ["antd-default", "outline", "hero", "antd-primary"];
 
 const isAiVariant = (variant: TestVariant): variant is AiVariant => variant !== "antd-default" && variant !== "antd-primary";
 
@@ -29,7 +29,18 @@ const ButtonSizeTest = () => {
       TEST_VARIANTS.forEach(variant => {
         const wrapper = wrappersRef.current.get(variant);
         if (wrapper) {
-          const rect = wrapper.getBoundingClientRect();
+          // For AI variants, measure the inner aiButtonWrapper div (with gradient border)
+          // For Ant variants, measure the wrapper directly
+          let elementToMeasure = wrapper;
+          if (isAiVariant(variant)) {
+            // Find the first child div which is the aiButtonWrapper
+            const aiWrapper = wrapper.querySelector('div[class*="aiButtonWrapper"]');
+            if (aiWrapper) {
+              elementToMeasure = aiWrapper as HTMLDivElement;
+            }
+          }
+
+          const rect = elementToMeasure.getBoundingClientRect();
           newMeasurements.push({
             variant,
             width: Math.round(rect.width * 10) / 10,
@@ -103,7 +114,7 @@ const ButtonSizeTest = () => {
               <AIButton variant="outline" size={size}>
                 Summarize
               </AIButton>
-              <AIButton variant="combined" size={size}>
+              <AIButton variant="hero" size={size}>
                 Summarize
               </AIButton>
               <Button
