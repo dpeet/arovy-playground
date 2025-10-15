@@ -159,21 +159,25 @@ npm run dev
 
 ## IMPORTANT: Gradient Border Implementation
 
-### The Padding-Based Border Technique
+### The Separate-Layer Architecture
 
-The `AIButton` hero and hero-outline variants use a **critical wrapper-padding technique** to achieve gradient borders. This is NOT a standard CSS pattern and must be preserved exactly.
+The `AIButton` hero and hero-outline variants use a **separate-layer architecture** to achieve gradient borders with filters and effects. This architecture provides clean separation between border styling and button content.
 
 #### Why We Need This
-CSS does not support `border-image` with `border-radius`, so we use a clever workaround:
+CSS does not support `border-image` with `border-radius`, and we need to apply filters (saturate/brightness, drop-shadow) to borders without affecting button content. We use a sibling-layer approach:
 
 ```
 ┌──────────────────────────────────┐
-│ Wrapper DIV (gradient bg)        │ ← Gradient "border"
+│ Wrapper (positioning context)    │
+│                                   │
 │  ┌────────────────────────────┐  │
-│  │ Button (gradient fill)     │  │ ← Inner content
+│  │ Border Layer (absolute)    │  │ ← z-index: 1, with filter
+│  └────────────────────────────┘  │
+│  ┌────────────────────────────┐  │
+│  │ Button (relative, margin)  │  │ ← z-index: 2, clean content
 │  └────────────────────────────┘  │
 └──────────────────────────────────┘
-     ↑ Padding = border thickness
+     ↑ Margin on button creates inset
 ```
 
 #### Critical Rules - DO NOT VIOLATE
@@ -181,59 +185,86 @@ CSS does not support `border-image` with `border-radius`, so we use a clever wor
 **1. Wrapper Element Requirements:**
 ```scss
 .aiButtonWrapper--hero {
-  padding: var(--ai-border-width, 1px);           // Creates border space
-  background: linear-gradient(...);               // The "border" color
-  border-radius: calc(radius + border-width);     // Outer corner
-  margin: calc(var(--ai-border-width) * -1);      // Negative margin offset
+  position: relative;              // Positioning context for absolute children
+  display: inline-flex;
+  align-items: stretch;
+  // ❌ NO padding, margin, background, or filter here
+  // Just a positioning container
 }
 ```
 
-**2. Inner Button Requirements:**
+**2. Border Layer Requirements (Sibling to Button):**
+```scss
+.aiButtonBorder--hero {
+  position: absolute;
+  inset: 0;                        // Cover entire wrapper area
+  z-index: 1;                      // Behind the button content
+  pointer-events: none;            // Allow clicks to pass through
+  background: linear-gradient(...); // The gradient border
+  filter: drop-shadow(...);        // Effects applied ONLY to border
+  border-radius: calc(radius + border-width);  // Outer corner
+}
+```
+
+**3. Inner Button Requirements (Sibling to Border):**
 ```scss
 .aiButton--hero {
-  background: linear-gradient(...);     // Inner fill
+  position: relative;
+  z-index: 2;                      // Above the border layer
+  margin: var(--ai-border-width);  // Creates inset to reveal border
   border-radius: var(--ai-border-radius);  // Inner corner
-  // ❌ NEVER add border property here
-  // ❌ NEVER add border: 1px solid transparent
+  background: linear-gradient(...); // Inner fill (hero) or white (hero-outline)
+  // ❌ NO border property - not needed with separate layers
+  // ❌ NO filter property - border effects isolated to border layer
 }
 ```
 
-#### Why NO Border on Inner Button?
+#### Why Separate Layers?
 
-**Any `border` property on the inner button creates a dark line artifact:**
-- `border: 1px solid transparent` → Dark 1px gap appears
-- `border: 1px solid rgba(0,0,0,0)` → Same dark gap
-- Even transparent borders occupy space and create visual artifacts
-
-The wrapper's `padding` already creates the space for the border effect. The wrapper's `background` shows through that space. Adding a border to the inner button creates an **extra layer** between the wrapper background and button background.
+**Benefits of the sibling-layer architecture:**
+- **Filter isolation**: Filters (saturate, brightness, drop-shadow) affect ONLY the border, not button text/icons
+- **Clean content**: Button content remains sharp and unfiltered
+- **Consistent pattern**: Both hero and hero-outline variants use identical structure
+- **No artifacts**: No dark lines or visual glitches between layers
+- **Easy maintenance**: Border and content styling completely independent
 
 #### Files That Implement This
 
-- `src/components/AIButton.tsx` - Wrapper structure (lines 139-209)
-- `src/components/AIButton.module.scss` - Styles (lines 107-143, 151-179)
-- Both `.aiButtonWrapper--hero` and `.aiButtonWrapper--hero-outline` use this technique
+- `src/components/AIButton.tsx` - Component structure (lines 140-236)
+  - Wrapper: lines 191-201 (hero), 142-152 (hero-outline)
+  - Border layer: lines 203-211 (hero), 154-162 (hero-outline)
+  - Button: lines 214-234 (hero), 165-185 (hero-outline)
+- `src/components/AIButton.module.scss` - Styles (lines 100-187)
+  - Hero-outline: lines 100-158
+  - Hero: lines 161-138
 
-#### Common Mistakes to Avoid
+#### Common Patterns
 
-❌ **WRONG** - Dark line appears:
-```scss
-.aiButton--hero {
-  border: 1px solid transparent;  // Creates artifact
-}
+✅ **CORRECT** - Separate layers with z-index stacking:
+```tsx
+<div className="aiButtonWrapper--hero">
+  {/* Border layer - absolute, z-index: 1, with filter */}
+  <div className="aiButtonBorder--hero" aria-hidden="true" />
+
+  {/* Button - relative, z-index: 2, clean content */}
+  <Button className="aiButton--hero">
+    Content
+  </Button>
+</div>
 ```
 
-✅ **CORRECT** - Clean gradient border:
-```scss
-.aiButton--hero {
-  border-radius: var(--ai-border-radius);
-  // No border property at all
-}
+❌ **WRONG** - Parent-child with inherited filter:
+```tsx
+<div className="wrapper-with-filter">  {/* Filter affects children */}
+  <Button>Content</Button>  {/* Inherits filter, text looks bad */}
+</div>
 ```
 
 #### Animation Details
 
-The hero variant animates its gradient angle from 135° to 315° on hover:
+Both variants animate gradient angle from 135° to 315° on hover:
 - `--ai-button-angle` CSS variable drives rotation
-- Both wrapper background AND inner background rotate together
-- Border and fill gradients use same angle for seamless effect
+- Hero: Both border gradient AND inner gradient rotate together
+- Hero-outline: Border gradient rotates, inner stays white
+- Filters transition smoothly (hero-outline: saturate/brightness, hero: drop-shadow intensity)
 - Duration: 300ms with `easeOutCubic` easing

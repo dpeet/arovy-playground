@@ -77,7 +77,7 @@ const SparkleIconSVG = ({
   return (
     <svg
       className={className}
-      style={disableInlineSize ? undefined : { width: `${size}px`, height: `${size}px` }}
+      style={disableInlineSize ? { shapeRendering: 'geometricPrecision' } : { width: `${size}px`, height: `${size}px`, shapeRendering: 'geometricPrecision' }}
       viewBox="0 0 128 128"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

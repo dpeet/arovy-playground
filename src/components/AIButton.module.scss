@@ -44,9 +44,9 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   color: $button-text-dark;
 
   // Note: Filter states removed from base class
-  // Filters are applied per-variant to allow border-layer-only filtering for hero-outline
-  // - hero-outline: filter on border layer only (lines 132-138)
-  // - hero: filter on wrapper (lines 84-98)
+  // Filters are applied per-variant to allow border-layer-only filtering
+  // - hero-outline: filter on border layer only (saturate/brightness on gradient)
+  // - hero: drop-shadow filter on border layer only (creates glow effect)
 
   &:global(.ant-btn) {
     &::before {
@@ -93,8 +93,8 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 // ============================================
 // Base Wrapper Styles (shared by all variants)
 // ============================================
-// Note: Each variant defines its own wrapper styles with direct backgrounds
-// No shared wrapper needed - the padding-based border trick is variant-specific
+// Note: Each variant defines its own wrapper styles as positioning contexts
+// No shared wrapper needed - the separate-layer architecture is variant-specific
 
 // ============================================
 // HERO-OUTLINE Variant - Separate Layer Approach
@@ -115,22 +115,28 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   position: absolute;
   inset: 0;  // Cover entire wrapper area
   border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));  // Outer radius
-  // This gradient IS the animated "border" - rotates 135deg → 315deg on hover via --ai-button-angle
-  background: ai.ai-gradient-stops(
-    var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle, 315deg hover)
-    ai.$primary-blue,
-    ai.$primary-orange
-  );
   pointer-events: none;  // Allow clicks to pass through to button below
   z-index: 1;  // Behind the button content
   @include ai.transitionAll;
 
-  // Filter states - ONLY affect this border layer, not the button content
+  // Idle state: standard gradient with neutral filter
   &.aiButton--idle {
+    // This gradient IS the animated "border" - rotates 135deg → 315deg on hover via --ai-button-angle
+    background: ai.ai-gradient-stops(
+      var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle)
+      ai.$primary-blue,
+      ai.$primary-orange
+    );
     @include ai.filter-idle;
   }
 
+  // Hover state: rotated gradient with enhanced saturate/brightness filter
   &.aiButton--hovered {
+    background: ai.ai-gradient-stops(
+      var(--ai-button-angle, #{$hover-angle}),  // Dynamic angle (315deg hover)
+      ai.$primary-blue,
+      ai.$primary-orange
+    );
     @include ai.filter-hover;  // Filter ONLY affects this border layer
   }
 }
@@ -159,54 +165,63 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 
 
 // ============================================
-// HERO Variant
+// HERO Variant - Separate Layer Approach
 // ============================================
 
-// Wrapper with animated gradient and drop shadows (only variant-specific styles)
-// IMPORTANT: This wrapper uses the "padding-based border trick" with animated gradient rotation
-// The padding creates space for a visual border, and the rotating background gradient shows through
+// Outer wrapper - positioning context only (matches hero-outline approach)
+// No longer uses the "padding-based border trick" - instead uses separate sibling layers
 .aiButtonWrapper--hero {
   position: relative;
   display: inline-flex;
   align-items: stretch;
-  padding: var(--ai-border-width, 1px);  // Creates the "border" space - wrapper bg shows through here
-  border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));  // Outer radius (inner + border)
-  // This gradient IS the animated "border" - rotates 135deg → 315deg on hover via --ai-button-angle
-  background: ai.ai-gradient-stops(
-    var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle, 315deg hover)
-    $button-border-idle-blue,    // Darker blue for idle border
-    $button-border-idle-orange   // Darker orange for idle border
-  );
-  margin: calc(var(--ai-border-width, 1px) * -1);  // Negative margin to offset padding and maintain size
+  // No padding/margin/background/filter - just a positioning container
+}
+
+// Border layer - gradient background with filter and drop-shadow (sibling to button, not parent)
+// IMPORTANT: This layer is positioned absolutely behind the button content
+.aiButtonBorder--hero {
+  position: absolute;
+  inset: 0;  // Cover entire wrapper area
+  border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));  // Outer radius
+  pointer-events: none;  // Allow clicks to pass through to button below
+  z-index: 1;  // Behind the button content
   @include ai.transitionAll;
 
-  &.aiButtonWrapper--idle {
+  // Idle state: darker border gradient with subtle drop-shadow
+  &.aiButton--idle {
+    // This gradient IS the animated "border" - rotates 135deg → 315deg on hover via --ai-button-angle
+    background: ai.ai-gradient-stops(
+      var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle)
+      $button-border-idle-blue,    // Darker blue for idle border
+      $button-border-idle-orange   // Darker orange for idle border
+    );
     filter: drop-shadow(3px 3px 6px $shadow-blue-idle)
             drop-shadow(3px 3px 6px $shadow-orange-idle);
   }
 
-  &.aiButtonWrapper--hovered {
-    // On hover: brighter gradient border with enhanced glow
+  // Hover state: brighter border gradient with enhanced drop-shadow glow
+  &.aiButton--hovered {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),  // Rotated to 315deg
-      ai.$primary-blue,     // Brighter blue for hover
-      ai.$primary-orange    // Brighter orange for hover
+      ai.$primary-blue,     // Brighter blue for hover border
+      ai.$primary-orange    // Brighter orange for hover border
     );
     filter: drop-shadow(3px 3px 6px $shadow-blue-hover)    // Enhanced blue glow
             drop-shadow(3px 3px 6px $shadow-orange-hover);  // Enhanced orange glow
   }
 }
 
-// Inner button for hero variant
-// CRITICAL: NO border property here! Any border (even transparent) creates a dark line artifact
-// The wrapper's padding already creates the border effect - this button fills the inner space
+// Inner button for hero variant (sibling to border, not child)
+// IMPORTANT: This is positioned relatively and uses margin to create inset from border
 .aiButton--hero {
   color: $button-text-dark !important;  // Black text for contrast on gradient background
   position: relative;
-  z-index: 1;  // Ensure button renders above wrapper
-  border-radius: var(--ai-border-radius, 6px);  // Inner radius (1px smaller than wrapper)
+  z-index: 2;  // Above the border layer
+  border-radius: var(--ai-border-radius, 6px);  // Inner radius
   box-sizing: border-box;  // Include any spacing in width/height calculations
-  // ❌ DO NOT add border property - creates unwanted dark line between wrapper and button
+  // Inset the button to show the border layer behind it
+  margin: var(--ai-border-width, 1px);
+  // ❌ NO border property - not needed with separate layer approach
 
   &.aiButton--idle {
     // Inner gradient fill - rotates in sync with wrapper border gradient

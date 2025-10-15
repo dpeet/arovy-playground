@@ -135,7 +135,8 @@ const AIButton = (props: AIButtonProps) => {
     '--ai-button-angle': `${gradientAngle}deg`,
   } as CSSProperties;
 
-  // Render different variants
+  // Render different variants using separate-layer architecture
+  // Both variants use: wrapper (positioning) → border layer (effects) → button (content)
   switch (variant) {
     case "hero-outline":
       return (
@@ -150,7 +151,9 @@ const AIButton = (props: AIButtonProps) => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* Border layer with filter - separate from content */}
+          {/* Border layer: absolute positioned sibling with gradient + filter (saturate/brightness)
+              z-index: 1 (behind button), pointer-events: none (clicks pass through)
+              Filter affects ONLY this layer, keeping button content sharp */}
           <div
             className={cn(
               styles.aiButtonBorder,
@@ -161,7 +164,8 @@ const AIButton = (props: AIButtonProps) => {
             aria-hidden="true"
           />
 
-          {/* Content layer without filter */}
+          {/* Button layer: relative positioned with margin inset to reveal border
+              z-index: 2 (above border), no filter (clean text and icon rendering) */}
           <Button
             type="default"
             icon={
@@ -199,6 +203,21 @@ const AIButton = (props: AIButtonProps) => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
+          {/* Border layer: absolute positioned sibling with darker gradient + drop-shadow glow
+              z-index: 1 (behind button), pointer-events: none (clicks pass through)
+              Drop-shadow filter affects ONLY this layer, creating glow without blurring text */}
+          <div
+            className={cn(
+              styles.aiButtonBorder,
+              styles["aiButtonBorder--hero"],
+              getStateClass()
+            )}
+            style={sharedStyle}
+            aria-hidden="true"
+          />
+
+          {/* Button layer: relative positioned with gradient fill, margin inset reveals border
+              z-index: 2 (above border), gradient rotates in sync with border gradient */}
           <Button
             type="primary"
             icon={
