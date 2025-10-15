@@ -195,7 +195,6 @@ CSS does not support `border-image` with `border-radius`, so we use a clever wor
   border-radius: var(--ai-border-radius);  // Inner corner
   // ❌ NEVER add border property here
   // ❌ NEVER add border: 1px solid transparent
-  // ❌ NEVER add any border at all
 }
 ```
 
@@ -238,5 +237,3 @@ The hero variant animates its gradient angle from 135° to 315° on hover:
 - Both wrapper background AND inner background rotate together
 - Border and fill gradients use same angle for seamless effect
 - Duration: 300ms with `easeOutCubic` easing
-
-See `GRADIENT_EFFECTS_GUIDE.md` for complete implementation details.

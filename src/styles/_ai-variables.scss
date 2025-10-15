@@ -32,6 +32,13 @@ $gradient-soft-angle: 90deg;      // Soft gradient angle (horizontal)
 $gradient-hover-angle: 315deg;    // Animated gradient hover target
 
 // ============================================
+// Animation Timing
+// ============================================
+
+$animation-duration: 300ms;                                    // Standard animation duration (matches JS)
+$animation-easing: cubic-bezier(0.215, 0.61, 0.355, 1);      // easeOutCubic - matches JavaScript easing
+
+// ============================================
 // Gradient Mixins
 // ============================================
 
@@ -78,8 +85,20 @@ $gradient-hover-angle: 315deg;    // Animated gradient hover target
   cursor: pointer;
 }
 
-@mixin transitionAll($duration: 0.3s) {
-  transition: all $duration ease;
+@mixin transitionAll($duration: $animation-duration) {
+  transition: all $duration $animation-easing;
+}
+
+@mixin transitionColor($duration: $animation-duration) {
+  transition: color $duration $animation-easing;
+}
+
+@mixin transitionFilter($duration: $animation-duration) {
+  transition: filter $duration $animation-easing;
+}
+
+@mixin transitionBackground($duration: $animation-duration) {
+  transition: background $duration $animation-easing;
 }
 
 @mixin boxShadowLg {
