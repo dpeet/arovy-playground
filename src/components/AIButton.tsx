@@ -65,11 +65,14 @@ const AIButton = (props: AIButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [gradientAngle, setGradientAngle] = useState(135);
   const animationRef = useRef<number | null>(null);
+  // Store angle in ref to access current value during animation without re-triggering effect
   const angleRef = useRef(gradientAngle);
 
-  // Both hero and hero-outline variants use gradient animation
+  // Both variants need JavaScript animation because CSS cannot smoothly transition gradient angles
+  // even with @property registration - we need requestAnimationFrame for smooth interpolation
   const animateGradient = true;
 
+  // Keep angleRef in sync with state for animation continuity (prevents jumps when reversing mid-animation)
   useEffect(() => {
     angleRef.current = gradientAngle;
   }, [gradientAngle]);
@@ -88,8 +91,8 @@ const AIButton = (props: AIButtonProps) => {
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Use easeOutCubic when entering (fast start, slow landing)
-      // Use easeInCubic when exiting (slow start, fast exit)
+      // Use easeOutCubic for smooth, pleasant motion feel (fast start, gentle landing)
+      // This creates a more responsive feel than linear while avoiding abrupt stops
       const easingFn = isHovered ? easeOutCubic : easeOutCubic;
       const easeProgress = easingFn(progress);
 
@@ -110,7 +113,8 @@ const AIButton = (props: AIButtonProps) => {
     };
   }, [animateGradient, isHovered]);
 
-  // Compose hover handlers to preserve both internal state and user callbacks
+  // Compose hover handlers to preserve user's callbacks while managing internal animation state
+  // This allows parent components to attach their own hover logic without breaking our animations
   const handleMouseEnter: ButtonProps["onMouseEnter"] = (event) => {
     setIsHovered(true);
     userMouseEnter?.(event);
@@ -125,7 +129,8 @@ const AIButton = (props: AIButtonProps) => {
   const getStateClass = () => isHovered ? styles["aiButton--hovered"] : styles["aiButton--idle"];
   const getWrapperStateClass = () => isHovered ? styles["aiButtonWrapper--hovered"] : styles["aiButtonWrapper--idle"];
 
-  // Shared CSS variables keep wrapper/button sizing and gradients in sync
+  // Shared CSS variables keep border layer, button content, and sizing perfectly synchronized
+  // Using CSS variables allows the animated angle to update both layers simultaneously
   const sharedStyle = {
     '--ai-border-width': resolvedBorderWidth,
     '--ai-border-radius': resolvedBorderRadius,

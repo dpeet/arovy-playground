@@ -217,7 +217,7 @@ const ButtonSizeTest = () => {
               >
                 Summarize
               </EasingTestButton>
-              <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+              <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold z-10">
                 ACTIVE
               </div>
             </div>
