@@ -67,8 +67,8 @@ const AIButton = (props: AIButtonProps) => {
   const animationRef = useRef<number | null>(null);
   const angleRef = useRef(gradientAngle);
 
-  // Only hero variant uses gradient animation
-  const animateGradient = variant === "hero";
+  // Both hero and hero-outline variants use gradient animation
+  const animateGradient = true;
 
   useEffect(() => {
     angleRef.current = gradientAngle;
@@ -90,7 +90,7 @@ const AIButton = (props: AIButtonProps) => {
       const progress = Math.min(elapsed / duration, 1);
       // Use easeOutCubic when entering (fast start, slow landing)
       // Use easeInCubic when exiting (slow start, fast exit)
-      const easingFn = isHovered ? easeOutCubic : easeInCubic;
+      const easingFn = isHovered ? easeOutCubic : easeOutCubic;
       const easeProgress = easingFn(progress);
 
       const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
@@ -191,7 +191,7 @@ const AIButton = (props: AIButtonProps) => {
             type="primary"
             icon={
               <SparkleIconSVG
-                variant="white"
+                variant="black"
                 size={iconSize}
                 className={styles.sparkleIcon} // Required for SCSS icon color transitions
               />

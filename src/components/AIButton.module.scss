@@ -90,7 +90,7 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   // Match the working Ant Design button icon styles
   display: block !important;
   line-height: inherit !important;  // Inherit line-height from button for proper centering
-  transition: color 0.1s ease-out;
+  @include ai.transitionColor;
 }
 
 // ============================================
@@ -112,7 +112,12 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   align-items: stretch;
   padding: var(--ai-border-width, 1px);  // Creates the "border" space - wrapper bg shows through here
   border-radius: calc(var(--ai-border-radius, 6px) + var(--ai-border-width, 1px));  // Outer radius (inner + border)
-  background: ai.ai-gradient();  // This IS the visual "border" - shows through padding gap
+  // This gradient IS the animated "border" - rotates 135deg → 315deg on hover via --ai-button-angle
+  background: ai.ai-gradient-stops(
+    var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle, 315deg hover)
+    ai.$primary-blue,
+    ai.$primary-orange
+  );
   margin: calc(var(--ai-border-width, 1px) * -1);  // Negative margin to offset padding and maintain size
   @include ai.transitionAll;
 
@@ -136,6 +141,9 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   position: relative;
   z-index: 1;  // Ensure button renders above wrapper
   // ❌ DO NOT add border property - creates unwanted dark line between wrapper and button
+
+  // Cancel out wrapper's filter effects so they don't affect button text
+  filter: none;
 
   &.aiButton--idle {
     color: $button-text-dark !important;  // Black icon and text in idle state
@@ -190,7 +198,7 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 // CRITICAL: NO border property here! Any border (even transparent) creates a dark line artifact
 // The wrapper's padding already creates the border effect - this button fills the inner space
 .aiButton--hero {
-  color: $button-text-light !important;  // White text for contrast on gradient background
+  color: $button-text-dark !important;  // Black text for contrast on gradient background
   position: relative;
   z-index: 1;  // Ensure button renders above wrapper
   border-radius: var(--ai-border-radius, 6px);  // Inner radius (1px smaller than wrapper)
@@ -234,7 +242,7 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 // only use !important when absolutely necessary
 .aiButton--hero {
   &:global(.ant-btn-primary) {
-    color: $button-text-light !important;
+    color: $button-text-dark !important;
   }
 }
 

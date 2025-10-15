@@ -3,7 +3,6 @@ import { Button } from "antd";
 import type { ButtonProps } from "antd";
 import { cn } from "@/lib/utils";
 import type { EasingFunction } from "@/lib/easing";
-import { easeInCubic } from "@/lib/easing";
 import SparkleIconSVG from "./SparkleIconSVG";
 import styles from "./AIButton.module.scss";
 
@@ -90,15 +89,8 @@ const EasingTestButton = (props: EasingTestButtonProps) => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Use the provided easing for enter, and optionally use its inverse for exit
-      let easeProgress: number;
-      if (useSymmetricEasing && !isHovered) {
-        // On exit, use easeInCubic for symmetric feel
-        easeProgress = easeInCubic(progress);
-      } else {
-        // On enter, use the provided easing function
-        easeProgress = easingFunction(progress);
-      }
+      // Use the same easing function for both enter and exit
+      const easeProgress = easingFunction(progress);
 
       const currentAngle = startAngle + (targetAngle - startAngle) * easeProgress;
       setGradientAngle(currentAngle);
@@ -115,7 +107,7 @@ const EasingTestButton = (props: EasingTestButtonProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [easingFunction, useSymmetricEasing, isHovered]);
+  }, [easingFunction, isHovered]);
 
   const handleMouseEnter: ButtonProps["onMouseEnter"] = (event) => {
     setIsHovered(true);
@@ -156,7 +148,7 @@ const EasingTestButton = (props: EasingTestButtonProps) => {
           type="primary"
           icon={
             <SparkleIconSVG
-              variant="white"
+              variant="black"
               size={iconSize}
               className={styles.sparkleIcon}
             />
