@@ -80,6 +80,7 @@ Apply color strategically for professional UIs:
   - Example: Blue button background with white text and black sparkle icon
 - **Secondary buttons**: Use **black** sparkle on white/light backgrounds
 - **Outline buttons**: Use **color** (gradient) sparkle
+- **Gradient border technique**: Wrap the button with a gradient background container that provides `padding` for the visible border, keep the inner button borderless, and match border radii via CSS variables so no dark seam appears.
 - Icon size: 20px for buttons, 24px for standalone actions
 - Ensure 4.5:1 text contrast and 2px visible focus rings
 

@@ -122,7 +122,10 @@ const AIIconographyShowcase = () => {
         <Paragraph>
           Two core AI button designs: the "Hero" button for primary AI actions, and the "Outline" button for secondary actions.
         </Paragraph>
-        <Space direction="vertical" size="large" style={{ width: "100%", marginTop: 32 }}>
+        <Paragraph type="secondary">
+          Each uses a gradient wrapper providing padding for the visible border while the inner button stays borderless with matched radii, keeping the gradient edge crisp without seams.
+        </Paragraph>
+        <Space direction="horizontal" size="large" style={{ width: "100%", marginTop: 32, gap: 64 }} wrap>
           {BUTTON_VARIANTS.map(({ variant, title, description }) => (
             <div key={variant} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
               <AIButton variant={variant} onClick={() => handleButtonClick(title)}>
@@ -137,12 +140,57 @@ const AIIconographyShowcase = () => {
         </Space>
         <div style={{ marginTop: 32, textAlign: "center" }}>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            Click any button to see the interaction • Hover to see the gradient animations and glow effects
+            Hover to see the gradient animations and glow effects. 
           </Text>
         </div>
       </Card>
 
-      <Divider />
+
+         {/* Core Sparkle Variants */}
+      <Card title="Core Sparkle Variants" style={{ marginBottom: 24 }}>
+        <Row gutter={[24, 24]}>
+          <Col span={8}>
+            <Card size="small" title="Color (Gradient)" style={{ textAlign: "center" }}>
+              <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <AISparkleIcon variant="color" size={48} />
+                <AISparkleIcon variant="color" size={32} />
+                <AISparkleIcon variant="color" size={24} />
+                <AISparkleIcon variant="color" size={16} />
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  Primary AI indicators, hero CTAs, feature highlights
+                </Text>
+              </Space>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card size="small" title="Black" style={{ textAlign: "center" }}>
+              <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <AISparkleIcon variant="black" size={48} />
+                <AISparkleIcon variant="black" size={32} />
+                <AISparkleIcon variant="black" size={24} />
+                <AISparkleIcon variant="black" size={16} />
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  Secondary buttons, inline indicators, table rows
+                </Text>
+              </Space>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card size="small" title="Disabled (Grey)" style={{ textAlign: "center" }}>
+              <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <AISparkleIcon variant="disabled" size={48} />
+                <AISparkleIcon variant="disabled" size={32} />
+                <AISparkleIcon variant="disabled" size={24} />
+                <AISparkleIcon variant="disabled" size={16} />
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  Disabled states, unavailable features
+                </Text>
+              </Space>
+            </Card>
+          </Col>
+        </Row>
+      </Card>
+
 
       {/* Icon Button Showcase */}
       <Card title="AI Icon Button" style={{ marginBottom: 24 }}>
@@ -188,85 +236,43 @@ const AIIconographyShowcase = () => {
 
           <div>
             <Title level={5}>Interactive States</Title>
-            <Space size="large">
+            <Space size="large" align="start">
               <div style={{ textAlign: "center" }}>
-                <AIIconButton
-                  iconSize="medium"
-                  onClick={() => toast.success("Active button clicked!")}
-                  aria-label="Active AI action"
-                />
-                <div style={{ marginTop: 8 }}>
-                  <Text type="secondary" style={{ fontSize: 11 }}>Normal</Text>
-                </div>
+              <AIIconButton
+                iconSize="medium"
+                onClick={() => toast.success("Active button clicked!")}
+                aria-label="Active AI action"
+              />
+              <div style={{ marginTop: 8 }}>
+                <Text type="secondary" style={{ fontSize: 11 }}>
+                Interactive
+                <br />
+                Icon
+                </Text>
+              </div>
               </div>
               <div style={{ textAlign: "center" }}>
-                <AIIconButton
-                  iconSize="medium"
-                  disabled
-                  aria-label="Disabled AI action"
-                />
-                <div style={{ marginTop: 8 }}>
-                  <Text type="secondary" style={{ fontSize: 11 }}>Disabled</Text>
-                </div>
+              <AIIconButton
+                iconSize="medium"
+                disabled
+                aria-label="Disabled AI action"
+              />
+              <div style={{ marginTop: 8 }}>
+                <Text type="secondary" style={{ fontSize: 11}}>Disabled</Text>
+              </div>
               </div>
             </Space>
           </div>
 
           <div>
             <Text type="secondary" style={{ fontSize: 12 }}>
-              Hover over the buttons to see the smooth transition from black to gradient • Click to see the interaction
+              Hover over the buttons to see the smooth transition from black to gradient
             </Text>
           </div>
         </Space>
       </Card>
 
-      <Divider />
-
-      {/* Core Sparkle Variants */}
-      <Card title="Core Sparkle Variants" style={{ marginBottom: 24 }}>
-        <Row gutter={[24, 24]}>
-          <Col span={8}>
-            <Card size="small" title="Color (Gradient)" style={{ textAlign: "center" }}>
-              <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                <AISparkleIcon variant="color" size={48} />
-                <AISparkleIcon variant="color" size={32} />
-                <AISparkleIcon variant="color" size={24} />
-                <AISparkleIcon variant="color" size={16} />
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  Primary AI indicators, hero CTAs, feature highlights
-                </Text>
-              </Space>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card size="small" title="Black" style={{ textAlign: "center" }}>
-              <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                <AISparkleIcon variant="black" size={48} />
-                <AISparkleIcon variant="black" size={32} />
-                <AISparkleIcon variant="black" size={24} />
-                <AISparkleIcon variant="black" size={16} />
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  Secondary buttons, inline indicators, table rows
-                </Text>
-              </Space>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card size="small" title="Disabled (Grey)" style={{ textAlign: "center" }}>
-              <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                <AISparkleIcon variant="disabled" size={48} />
-                <AISparkleIcon variant="disabled" size={32} />
-                <AISparkleIcon variant="disabled" size={24} />
-                <AISparkleIcon variant="disabled" size={16} />
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  Disabled states, unavailable features
-                </Text>
-              </Space>
-            </Card>
-          </Col>
-        </Row>
-      </Card>
-
+   
       {/* Special Variants */}
       <Card title="Special Variants" style={{ marginBottom: 24 }}>
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
