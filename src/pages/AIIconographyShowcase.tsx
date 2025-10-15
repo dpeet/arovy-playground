@@ -85,7 +85,25 @@ const AIIconographyShowcase = () => {
     {
       title: "Value",
       dataIndex: "value",
-      key: "value"
+      key: "value",
+      render: (text: string, record: DataType) => {
+        // Show button for the "Industry" row (key "2")
+        if (record.key === "2") {
+          return (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <AIButton
+                variant="hero-outline"
+                size="small"
+                onClick={() => toast.success("AI suggestion requested!")}
+                aria-label="Get AI suggestion"
+              >
+                Suggest
+              </AIButton>
+            </div>
+          );
+        }
+        return text;
+      }
     },
     {
       title: "Confidence",
