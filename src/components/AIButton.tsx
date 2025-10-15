@@ -150,6 +150,18 @@ const AIButton = (props: AIButtonProps) => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
+          {/* Border layer with filter - separate from content */}
+          <div
+            className={cn(
+              styles.aiButtonBorder,
+              styles["aiButtonBorder--hero-outline"],
+              getStateClass()
+            )}
+            style={sharedStyle}
+            aria-hidden="true"
+          />
+
+          {/* Content layer without filter */}
           <Button
             type="default"
             icon={
