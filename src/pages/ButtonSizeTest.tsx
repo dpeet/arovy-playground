@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import AIButton from "@/components/AIButton";
 import AISparkleIcon from "@/components/AISparkleIcon";
 import EasingTestButton from "@/components/EasingTestButton";
+import { TextReadabilityMockup } from "@/components/TextReadabilityMockup";
 import { Button } from "antd";
 import {
   easeOutQuad,
@@ -291,6 +292,53 @@ const ButtonSizeTest = () => {
           <p className="text-gray-700 mt-2">
             This creates a consistent feel with a moderate, balanced deceleration curve that works well for both
             entering and exiting states. The gradient angle rotates from 135° to 315° over 300ms.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <h2 className="text-lg font-semibold mb-4">Text Readability Solutions</h2>
+        <p className="text-sm text-gray-600 mb-6">
+          Compare different approaches to improve text readability on gradient backgrounds.
+          Hover over each button to see the effect with animation.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TextReadabilityMockup
+            variant="overlay"
+            label="Option 1: Overlay"
+            description="Semi-transparent dark overlay (rgba(0,0,0,0.2)) between gradient and text for better contrast"
+          />
+          <TextReadabilityMockup
+            variant="text-shadow"
+            label="Option 2: Text Shadow"
+            description="Adds text-shadow (0 1px 3px rgba(0,0,0,0.4)) to create depth and improve legibility"
+          />
+          <TextReadabilityMockup
+            variant="darker-gradient"
+            label="Option 3: Darker Gradient"
+            description="Uses darker gradient colors with white text for guaranteed high contrast"
+          />
+          <TextReadabilityMockup
+            variant="bold-text"
+            label="Option 5: Bold Text"
+            description="Increases font-weight to 600 to make text more prominent and readable"
+          />
+          <TextReadabilityMockup
+            variant="reduced-lightness"
+            label="Option 8: Reduced Lightness"
+            description="Keeps same hue range but reduces lightness values for better contrast"
+          />
+          <TextReadabilityMockup
+            variant="lighter-gradient"
+            label="Bonus: Lighter Gradient"
+            description="Starts with lighter gradient colors - compare readability with original"
+          />
+        </div>
+        <div className="mt-6 p-4 rounded-lg bg-blue-50 text-sm">
+          <h3 className="font-semibold mb-2">Recommendation</h3>
+          <p className="text-gray-700">
+            For the best readability and professional appearance, <strong>Option 3 (Darker Gradient + White Text)</strong> is recommended.
+            It provides guaranteed high contrast that meets WCAG accessibility standards and works well across all devices.
           </p>
         </div>
       </div>
