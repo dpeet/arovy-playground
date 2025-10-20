@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from 'antd';
 import SparkleIconSVG from './SparkleIconSVG';
 import styles from './TextReadabilityMockup.module.scss';
 
@@ -138,10 +137,13 @@ export const TextReadabilityMockup: React.FC<TextReadabilityMockupProps> = ({
     '--gradient-angle': `${gradientAngle}deg`,
     '--gradient-start': colors.start,
     '--gradient-end': colors.end,
+  } as React.CSSProperties;
+
+  const contentStyle: React.CSSProperties = {
     color: getTextColor(),
     fontWeight: getFontWeight(),
     textShadow: getTextShadow(),
-  } as React.CSSProperties;
+  };
 
   return (
     <div className={styles.mockupContainer}>
@@ -161,14 +163,10 @@ export const TextReadabilityMockup: React.FC<TextReadabilityMockupProps> = ({
             />
           </div>
           {hasOverlay && <div className={styles.overlay} />}
-          <Button
-            type="primary"
-            size="large"
-            icon={<SparkleIconSVG />}
-            className={styles.innerButton}
-          >
-            Generate with AI
-          </Button>
+          <button className={styles.innerButton} style={contentStyle}>
+            <SparkleIconSVG />
+            <span>Generate with AI</span>
+          </button>
         </div>
       </div>
       <div className={styles.info}>

@@ -67,21 +67,27 @@
     font-weight: inherit;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(var(--gradient-angle), var(--gradient-start), var(--gradient-end));
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1;
     
-    // Override Ant Design styles
-    &.ant-btn-primary {
-      background: linear-gradient(var(--gradient-angle), var(--gradient-start), var(--gradient-end));
-      box-shadow: none;
-      
-      &:hover {
-        background: linear-gradient(var(--gradient-angle), var(--gradient-start), var(--gradient-end));
-      }
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
     }
 
-    // Remove default box shadows
+    span {
+      color: inherit;
+      font-weight: inherit;
+      text-shadow: inherit;
+    }
+
     &:focus,
     &:active {
-      box-shadow: none;
+      outline: none;
     }
   }
 }
