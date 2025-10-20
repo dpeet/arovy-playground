@@ -194,29 +194,31 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
   z-index: 1;  // Behind the button content
   @include ai.transitionAll;
 
-  // Idle state: darker border gradient with subtle drop-shadow
+  // Idle state: soft gradient with saturate/brightness and drop-shadow
   &.aiButton--idle {
     // JavaScript animates --ai-button-angle from 135deg to 315deg because CSS can't
     // smoothly transition gradient angles (background property is not transitionable)
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$default-angle}),  // Dynamic angle (135deg idle)
-      $button-border-idle-blue,    // Darker blue for idle border
-      $button-border-idle-orange   // Darker orange for idle border
+      ai.$soft-blue,    // Soft pastel blue for idle border
+      ai.$soft-orange   // Soft pastel orange for idle border
     );
-    // Drop-shadow on border layer only (not button) creates glow without blurring text
-    filter: drop-shadow(3px 3px 6px $shadow-blue-idle)
+    // Combine saturate/brightness with drop-shadow for glow without blurring text
+    filter: saturate(1) brightness(1)
+            drop-shadow(3px 3px 6px $shadow-blue-idle)
             drop-shadow(3px 3px 6px $shadow-orange-idle);
   }
 
-  // Hover state: brighter border gradient with enhanced drop-shadow glow
+  // Hover state: enhanced filter with saturate/brightness and drop-shadow glow
   &.aiButton--hovered {
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),  // Rotated to 315deg
-      ai.$primary-blue,     // Brighter blue for hover border
-      ai.$primary-orange    // Brighter orange for hover border
+      ai.$primary-blue,     // Standard blue (filter enhances vibrancy)
+      ai.$primary-orange    // Standard orange (filter enhances vibrancy)
     );
-    // Enhanced drop-shadow creates prominent glow effect on hover without affecting button content
-    filter: drop-shadow(3px 3px 6px $shadow-blue-hover)    // Enhanced blue glow
+    // Combine saturate/brightness filter with enhanced drop-shadow for vibrant glow
+    filter: saturate(1.5) brightness(1.15)
+            drop-shadow(3px 3px 6px $shadow-blue-hover)    // Enhanced blue glow
             drop-shadow(3px 3px 6px $shadow-orange-hover);  // Enhanced orange glow
   }
 }
@@ -225,6 +227,7 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
 // Positioned as sibling with z-index above border, gradient fill rotates in sync with border
 .aiButton--hero {
   color: $button-text-dark !important;  // Black text for contrast on gradient background
+  font-weight: 500;  // Medium weight for better readability on gradient background
   position: relative;
   z-index: 2;  // Above the border layer
   border-radius: var(--ai-border-radius, 6px);  // Inner radius
@@ -237,18 +240,22 @@ $shadow-orange-hover: rgba(255, 158, 120, 0.35);
     // Inner gradient fill - rotates in sync with wrapper border gradient
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$default-angle}),  // Same angle as wrapper (135deg)
-      ai.$primary-blue,     // Standard blue for inner fill
-      ai.$primary-orange    // Standard orange for inner fill
+      ai.$soft-blue,     // Soft pastel blue for inner fill
+      ai.$soft-orange    // Soft pastel orange for inner fill
     ) !important;
+    // Neutral filter in idle state (provides consistent baseline)
+    filter: saturate(1) brightness(1);
   }
 
   &.aiButton--hovered {
-    // Hover: brighter inner gradient, rotates in sync with border (315deg)
+    // Hover: enhanced filter creates vibrancy, gradient rotates in sync with border (315deg)
     background: ai.ai-gradient-stops(
       var(--ai-button-angle, #{$hover-angle}),  // Same angle as wrapper (315deg)
-      $button-inner-hover-blue,     // Brighter blue for hover
-      $button-inner-hover-orange    // Brighter orange for hover
+      ai.$primary-blue,     // Standard blue (filter enhances vibrancy)
+      ai.$primary-orange    // Standard orange (filter enhances vibrancy)
     ) !important;
+    // Enhanced filter makes gradient more vibrant and bright on hover
+    filter: saturate(1.5) brightness(1.15);
   }
 }
 
