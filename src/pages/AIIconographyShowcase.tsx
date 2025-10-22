@@ -143,7 +143,7 @@ const AIIconographyShowcase = () => {
         <Paragraph type="secondary">
           Each uses a gradient wrapper providing padding for the visible border while the inner button stays borderless with matched radii, keeping the gradient edge crisp without seams.
         </Paragraph>
-        <Space direction="horizontal" size="large" style={{ width: "100%", marginTop: 32, gap: 64 }} wrap>
+        <Space direction="horizontal" size="large" style={{ width: "100%", marginTop: 32, gap: 64, justifyContent: "center" }} wrap align="center">
           {BUTTON_VARIANTS.map(({ variant, title, description }) => (
             <div key={variant} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
               <AIButton variant={variant} onClick={() => handleButtonClick(title)}>
